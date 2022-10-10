@@ -3,11 +3,24 @@ import mysql.connector as mysql
 
 class mySQLcon:
     def __init__(self, ):
+        self.checkcur = False
         self.new_curser = None
         self.mydb = None
         self.checkcon = False
 
     def connect_server(self):
+        if self.checkcon:
+            print("Connection already created")
+        else:
+            self.mydb = mysql.Connect(host="localhost", user="root", password="Password@123", database="SALES")
+            self.mydb.autocommit = False
+            self.checkcon = True
+            print("Great! Your Connection is Done")
+            self.new_curser = self.mydb.cursor()
+            self.checkcur = True
+            print("New cursor created")
+
+    def connect_server_manually(self):
         host = input("Enter the name of host: ")
         user = input("Enter the user name: ")
         password = input("Enter your connection Password :")
@@ -16,21 +29,24 @@ class mySQLcon:
             self.mydb = mysql.Connect(host=host, user=user, password=password, database=database)
             self.mydb.autocommit = False
             print("Great! Your Connection is Done")
-            self.checkcon = True
-        except ImportError:
-            platform_specific_module = None
-            print("error")
-
-    def new_cursor(self):
-        if self.checkcon:
             self.new_curser = self.mydb.cursor()
             print("new cursor created")
+            self.checkcon = True
+            self.checkcur = True
+        except Exception as e:
+            print("error", e)
+
+    def new_cursor(self):
+        if self.checkcur:
+            print("Curser already created")
         else:
-            print('Seems like you did not have any connection')
+            self.new_curser = self.mydb.cursor()
+            self.checkcur = True
+            print("new cursor created")
 
     def Exec(self, query):
-        if self.checkcon:
-            self.new_curser.excecute(query)
+        if self.checkcon and self.checkcur:
+            self.new_curser.execute(query)
         else:
             print('Seems like you did not have any connection')
             self.mydb.rollback()
@@ -41,23 +57,28 @@ class mySQLcon:
     def Rollback(self):
         self.mydb.rollback()
 
-    def CheckConnection(self):
-        if self.mydb.is_connected():
-            print("Connected")
-        else:
-            print("Not Connected")
-
     def close_curser(self):
-        self.new_curser.close()
-        print("Curser is Closed")
+        if self.checkcur:
+            self.new_curser.close()
+            self.checkcur = False
+            print("Curser is Closed")
+        else:
+            print("Inactive Cursor")
 
     def close_connection(self):
-        self.mydb.close()
-        print("Connection is Closed")
+        if self.checkcon:
+            self.mydb.close()
+            self.checkcon = False
+            print("Connection is Closed")
+        else:
+            print("Inactive Connection")
 
     def row_from_queries(self, query):
         self.Exec(query)
         return self.new_curser.fetchone()
 
-print("adkahsbsa")
 
+obj = mySQLcon()
+obj.connect_server()
+obj.Exec("""insert into checknew1 values("Jay","kumar")""")
+obj.Commit()
