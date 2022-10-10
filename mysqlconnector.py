@@ -19,6 +19,7 @@ class mySQLcon:
             self.checkcon = True
         except ImportError:
             platform_specific_module = None
+            print("error")
 
     def new_cursor(self):
         if self.checkcon:
@@ -59,6 +60,4 @@ class mySQLcon:
         return self.new_curser.fetchone()
 
 
-obj1 = mySQLcon()
-obj1.connect_server()
 
