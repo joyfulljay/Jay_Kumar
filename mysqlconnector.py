@@ -59,5 +59,5 @@ class mySQLcon:
         self.Exec(query)
         return self.new_curser.fetchone()
 
-
+print("adkahsbsa")
 
