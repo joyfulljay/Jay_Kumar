@@ -8,17 +8,24 @@ class mySQLcon:
         self.mydb = None
         self.checkcon = False
 
+    def run_query(self, query):
+        self.connect_server()
+        self.Exec(query)
+        self.Commit()
+        self.close_curser()
+        self.close_connection()
+
     def connect_server(self):
         if self.checkcon:
             print("Connection already created")
         else:
-            self.mydb = mysql.Connect(host="localhost", user="root", password="Password@123", database="SALES")
+            self.mydb = mysql.Connect(host="localhost", user="root", password="Password@123", database="BANKING")
             self.mydb.autocommit = False
             self.checkcon = True
-            print("Great! Your Connection is Done")
+            # print("Great! Your Connection is Done")
             self.new_curser = self.mydb.cursor()
             self.checkcur = True
-            print("New cursor created")
+            # print("New cursor created")
 
     def connect_server_manually(self):
         host = input("Enter the name of host: ")
@@ -61,7 +68,7 @@ class mySQLcon:
         if self.checkcur:
             self.new_curser.close()
             self.checkcur = False
-            print("Curser is Closed")
+            # print("Curser is Closed")
         else:
             print("Inactive Cursor")
 
@@ -69,7 +76,7 @@ class mySQLcon:
         if self.checkcon:
             self.mydb.close()
             self.checkcon = False
-            print("Connection is Closed")
+            # print("Connection is Closed")
         else:
             print("Inactive Connection")
 
@@ -78,9 +85,4 @@ class mySQLcon:
         return self.new_curser.fetchall()
 
 
-obj = mySQLcon()
-obj.connect_server()
-obj.Exec("""insert into checknew1 values("Jay1","kumar")""")
-obj.Commit()
-d = obj.row_from_queries("select * from checknew1")
-print(d)
+
