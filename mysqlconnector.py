@@ -2,11 +2,12 @@ import mysql.connector as mysql
 
 
 class mySQLcon:
-    def __init__(self):
+    def __init__(self, db):
         self.checkcur = False
         self.new_curser = None
         self.mydb = None
         self.checkcon = False
+        self.database = db
 
     def run_query(self, query):
         self.connect_server()
@@ -19,7 +20,7 @@ class mySQLcon:
         if self.checkcon:
             print("Connection already created")
         else:
-            self.mydb = mysql.Connect(host="localhost", user="root", password="Password@123", database="BANKING")
+            self.mydb = mysql.Connect(host="localhost", user="root", password="Password@123", database=self.database)
             self.mydb.autocommit = False
             self.checkcon = True
             # print("Great! Your Connection is Done")

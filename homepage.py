@@ -1,7 +1,7 @@
 def run_process(option):
-    if (option == 1):
+    if option == 1:
         login()
-    elif (option == 2):
+    elif option == 2:
         Register()
     else:
         exitpage()
@@ -11,7 +11,7 @@ def Homepage():
     print("{:-^100}".format("Welcome to Leap bank"))
     print("1.) Hey! leaper please LOGIN")
     print("2.) Hey! do you know we create account instantly. Please REGISTER to get welcome bonus upto Rs 1000*")
-    print("press Enter key to Exit page")
+    print("press Enter or any key to Exit page")
     option = int(input("Please Select Desired Option : "))
     run_process(option)
 
