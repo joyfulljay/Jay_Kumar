@@ -11,7 +11,7 @@ def feedback(rating, comment, login_timestamp):
     if rating == 5:
         print("Thank you for your valuable feedback")
     elif rating == 4:
-        print("Thank you for your valuable feedback. We would serve you better next time.")
+        print("Thank you for your valuable feedback. We would serve you better next time. ")
     elif rating == 3:
         print("Thank you for your valuable feedback. We would serve you better next time.")
     elif rating == 2:

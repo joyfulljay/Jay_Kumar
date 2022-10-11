@@ -18,7 +18,7 @@ class mySQLcon:
 
     def connect_server(self):
         if self.checkcon:
-            print("Connection already created")
+            print("Connection already created ")
         else:
             self.mydb = mysql.Connect(host="localhost", user="root", password="Password@123", database=self.database)
             self.mydb.autocommit = False
