@@ -37,7 +37,7 @@ class constraints:
                 else:
                     count_special_char = count_special_char + 1
             if count_numeric == 0:
-                print('Please enter atleast 1 numeric value')
+                print('Please enter atleast single numeric value')
                 return False
             else:
                 if count_special_char == 0:
