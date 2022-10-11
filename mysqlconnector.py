@@ -2,7 +2,7 @@ import mysql.connector as mysql
 
 
 class mySQLcon:
-    def __init__(self, ):
+    def __init__(self):
         self.checkcur = False
         self.new_curser = None
         self.mydb = None
@@ -75,10 +75,12 @@ class mySQLcon:
 
     def row_from_queries(self, query):
         self.Exec(query)
-        return self.new_curser.fetchone()
+        return self.new_curser.fetchall()
 
 
 obj = mySQLcon()
 obj.connect_server()
-obj.Exec("""insert into checknew1 values("Jay","kumar")""")
+obj.Exec("""insert into checknew1 values("Jay1","kumar")""")
 obj.Commit()
+d = obj.row_from_queries("select * from checknew1")
+print(d)
