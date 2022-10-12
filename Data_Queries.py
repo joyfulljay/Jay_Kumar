@@ -2,7 +2,7 @@ from mysqlconnector import *
 
 
 class Data_queries:
-    def __init__(self, table_name, database):
+    def __init__(self, table_name, database): #
         self.table_name = table_name
         self.database = database
 
