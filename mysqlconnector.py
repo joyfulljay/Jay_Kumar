@@ -9,6 +9,14 @@ class mySQLcon:
         self.checkcon = False
         self.database = db
 
+    def dql_query(self, query):
+        self.connect_server()
+        out_put = self.row_from_queries(query)
+        self.Commit()
+        self.close_curser()
+        self.close_connection()
+        return out_put
+
     def run_query(self, query):
         self.connect_server()
         self.Exec(query)
