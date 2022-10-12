@@ -32,8 +32,6 @@ class constraints:
             print("oops, looks like you entered value out of bound")
 
     def password(self, user_response):
-        print("check1")
-        print(ord('s'))
         if len(user_response) < 9:
             print('Please enter at least 9 character length of password')
             return False
@@ -106,17 +104,51 @@ class constraints:
             print("Invalid Email Address #2")
             return False
         else:
-            if user_response[poschar + 1] == '.':  #Check whether '.' is not just ahead of '@' or just checking if email domain is exist or not
+            if user_response[poschar + 1] == '.':  #checking if email domain is exist or not
                 print("Invalid Email Address #3")
                 return False
             else:
-                if user_response[poschar::].count('.') != 1:  #Count of '.' after '@' should be 1
+                if user_response[poschar::].count('.') != 1:  # Count of '.' after '@' should be 1
                     print("Invalid Email Address #4")
                     return False
                 else:
-                    Global_domain = user_response[user_response.find('.', poschar)::]  #Extracting global domain from user input email
+                    Global_domain = user_response[user_response.find('.', poschar)::]  # Extracting global domain from user input email
                     if Global_domain in Global_domains:  # Checking whether top level domain exists or not
                         return True
                     else:
                         print("Invalid Email Address #5")
                         return False
+
+    def Pan_card(self, user_response):
+        if not self.spaces(user_response):
+            return False
+        if not self.length_constraint(user_response, 10):
+            return False
+        first_string_part = user_response[0:5]
+
+        numeric_part = user_response[5:9]
+
+        end_character = user_response[9]
+
+        for i in first_string_part:
+            if (ord(i) < ord('A')) or (ord(i) > ord('Z')):
+                print("Invalid Pan Number #1")
+                return False
+
+        for i in numeric_part:
+            if (ord(i) < ord('0')) or (ord(i) > ord('9')):
+                print("Invalid Pan Number #2")
+                return False
+
+        if (ord(end_character) < ord('A')) or (ord(end_character) > ord('Z')):
+            print("Invalid Pan Number #3")
+            return False
+
+        return True
+
+
+obj = constraints()
+s = "AILPZ1213Z"
+
+
+
