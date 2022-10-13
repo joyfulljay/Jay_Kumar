@@ -1,12 +1,13 @@
-from Register import *
+from Register import Registeration
 from login import *
 from exit import *
 
-reg = Registeration()
+
 def run_process(option):
     if option == 1:
         login()
     elif option == 2:
+        reg = Registeration()
         reg.register_user()
     else:
         exitpage()
@@ -19,5 +20,6 @@ def Homepage():
     print("press Enter or any key to Exit page")
     option = int(input("Please Select Desired Option : "))
     run_process(option)
+
 
 Homepage()

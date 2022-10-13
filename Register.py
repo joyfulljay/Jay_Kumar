@@ -1,7 +1,6 @@
 from constraints import *
 from Additional_Query_functions import *
 from login import *
-from homepage import *
 from Data_Queries import *
 from Output_Schema import *
 from mysqlconnector import *
@@ -52,9 +51,9 @@ class Registeration:
         response = input("Please enter the 12 digits valid Aadhar no: ")
         if self.query_obj.CheckInFunction("Aadhar_card", response):
             print("You are already registered")
-            user_input = input("press ENTER to go on login page or press anything to go on homepage")
+            user_input = input("press ENTER to go on login page or press anything to Continue with another Aadhar card")
             if bool(user_input):
-                Homepage()
+                self.Enter_Aadhar_no()
                 return
             else:
                 login()
@@ -65,9 +64,9 @@ class Registeration:
         else:
             print(
                 "Oops! please Try Again, Your Aadhar No. should be of 12 digits and should not have spaces in between")
-            user_input = input("press ENTER to continue with Aadhar details or enter anything to go on homepage")
+            user_input = input("press ENTER to try again with Aadhar details")
             if bool(user_input):
-                Homepage()
+                self.Enter_Aadhar_no()
                 return
             else:
                 self.Enter_Aadhar_no()
@@ -100,7 +99,7 @@ class Registeration:
         else:
             print(
                 "Oops! please Try Again, Your input format should be 8 digits in format YYYYMMD")
-            user_input = input("press ENTER to continue with D-O-B or enter anything to go on homepage")
+            user_input = input("press ENTER to try agin with D-O-B or enter anything to go on homepage")
             if bool(user_input):
                 Homepage()
                 return
