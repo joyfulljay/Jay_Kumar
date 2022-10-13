@@ -15,14 +15,11 @@ class constraints:
             return False
 
     def integer(self, user_response):
-        """
-
-        :type user_response: Any
-        """
         for i in user_response:
-            if (ord(i) < 48) and (ord(i) > 57):
+            if (ord(i) < ord('0')) or (ord(i) > ord('9')):
                 print("oops! please respond with a integral values")
                 return False
+
         return True
 
     def range(self, user_response, greater_than, lesser_than):
@@ -32,9 +29,6 @@ class constraints:
             print("oops, looks like you entered value out of bound")
 
     def password(self, user_response):
-        if len(user_response) == 0:
-            print('User Response is mandatory for this field')
-            return False
         if len(user_response) < 9:
             print('Please enter at least 9 character length of password')
             return False
@@ -76,29 +70,20 @@ class constraints:
                             return True
 
     def Aadhar_card(self, user_response):
-        if len(user_response) == 0:
-            print('User Response is mandatory for this field')
-            return False
-        if self.spaces(user_response) and self.integer(user_response) and self.length(user_response, 12):
+        if self.spaces(user_response) and self.integer(user_response) and self.length_constraint(user_response, 12):
             return True
         else:
-            print("Invalid Aadhar")
+            #print("Invalid Aadhar")
             return False
 
     def Mobile_no(self, user_response):
-        if len(user_response) == 0:
-            print('User Response is mandatory for this field')
-            return False
-        if self.spaces(user_response) and self.integer(user_response) and self.length(user_response, 10):
+        if self.spaces(user_response) and self.integer(user_response) and self.length_constraint(user_response, 10):
             return True
         else:
-            print("Invalid Mobile No.")
+            #print("Invalid Mobile No.")
             return False
 
     def email_id(self, user_response):
-        if len(user_response) == 0:
-            print('User Response is mandatory for this field')
-            return False
         if not self.spaces(user_response):
             return False
 
@@ -124,8 +109,7 @@ class constraints:
                     print("Invalid Email Address #4")
                     return False
                 else:
-                    Global_domain = user_response[user_response.find('.',
-                                                                     poschar)::]  # Extracting global domain from user input email
+                    Global_domain = user_response[poschar2::]  # Extracting global domain from user input email
                     if Global_domain in Global_domains:  # Checking whether top level domain exists or not
                         return True
                     else:
@@ -133,9 +117,6 @@ class constraints:
                         return False
 
     def Pan_card(self, user_response):
-        if len(user_response) == 0:
-            print('User Response is mandatory for this field')
-            return False
         if not self.spaces(user_response):
             return False
         if not self.length_constraint(user_response, 10):
@@ -163,25 +144,20 @@ class constraints:
         return True
 
     def D_O_B(self, user_response):
-        if len(user_response) == 0:
-            print('User Response is mandatory for this field')
-            return False
-        if self.spaces(user_response) and self.integer(user_response) and self.length(user_response, 8):
+        if self.spaces(user_response) and self.integer(user_response) and self.length_constraint(user_response, 8):
             return True
         else:
-            print("Invalid Date Of Birth")
+            #print("Invalid Date Of Birth")
             return False
 
     def name_check(self, user_response):
-        if len(user_response) == 0:
-            print('User Response is mandatory for this field')
-            return False
         if self.spaces(user_response):
             return True
         else:
-            print("Invalid input")
+            #print("Invalid input")
             return False
 
 
 obj = constraints()
 s = "AILPZ1213Z"
+print(obj.integer(s))

@@ -14,11 +14,14 @@ class Registeration:
         self.query_obj_pincode = helper_query("BANKING", "PincodeDB")
         self.data_query_obj = Data_queries("PincodeDB", "BANKING")
         self.schema_obj = Output_schema()
+        self.t = 0
 
     def Enter_mobile_no(self):
         print("Step 1")
-        t = 0
         response = input("Enter Valid Mobile no. : +91 ")
+        if len(response) == 0:
+            print('User Response is mandatory for this field')
+            self.Enter_mobile_no()
 
         if self.constraint_obj.Mobile_no(response):
 
@@ -27,30 +30,52 @@ class Registeration:
                 user_input = input("press ENTER to go on login page to retry with another mobile no. press any: ")
                 if bool(user_input):
                     self.Mobile_input()
+                    return
                 else:
                     login()
-            elif t > 3:
+                    return
+            elif self.t > 3:
                 print("{: ^100}".format("\U0001F60C \U0001F60C \U0001F60C "))
                 print("{: ^100}".format("Finally! you did it"))
             return response
         else:
-            t = t + 1
-            if t == 0:
+            if self.t == 0:
                 print("kripya! 10 ankon ka sahi mobile no. darj kijiye.........")
-            elif t == 1:
+            elif self.t == 1:
                 print("Ye no. bhi sahi nahi hai, kripya! 10 ankon ka sahi mobile no. darj kijiye.........")
-            elif t == 2:
+            elif self.t == 2:
                 print("Kya kar rahe ho bhai, kripya! 10 ankon ka sahi mobile no. darj kijiye.........")
-            elif t == 3:
+            elif self.t == 3:
                 print("jab ho jaye tab batadena, mein thoda so leta hun")
             else:
                 print("try again")
                 print("{: ^100}".format(" \U0001F634 \U0001F634 \U0001F634 \U0001F62A "))
+            self.t = self.t + 1
+            self.Enter_mobile_no()
 
     def Enter_Aadhar_no(self):
         response = input("Please enter the 12 digits valid Aadhar no: ")
+        if len(response) == 0:
+            print('User Response is mandatory for this field')
+            self.Enter_Aadhar_no()
+            return
+
+        if self.constraint_obj.Aadhar_card(response):
+            if self.query_obj.CheckInFunction("Aadhar_card", response):
+                print("You are already registered with this Aadhar")
+                user_input = input(
+                    "press ENTER to go on login page or press anything to Continue with another Aadhar card")
+                if bool(user_input):
+                    self.Enter_Aadhar_no()
+                    return
+                else:
+                    login()
+                    return
+            else:
+                return response
+
         if self.query_obj.CheckInFunction("Aadhar_card", response):
-            print("You are already registered")
+            print("You are already registered with this Aadhar")
             user_input = input("press ENTER to go on login page or press anything to Continue with another Aadhar card")
             if bool(user_input):
                 self.Enter_Aadhar_no()
@@ -58,9 +83,6 @@ class Registeration:
             else:
                 login()
                 return
-
-        if self.constraint_obj.Aadhar_card(response):
-            return response
         else:
             print(
                 "Oops! please Try Again, Your Aadhar No. should be of 12 digits and should not have spaces in between")
@@ -70,47 +92,67 @@ class Registeration:
                 return
             else:
                 self.Enter_Aadhar_no()
+                return
 
     def Enter_Your_first_name(self):
-        response = input("Please Enter your First Name without spaces")
+        response = input("Please Enter your First Name without spaces: ")
+        if len(response) == 0:
+            print('User Response is mandatory for this field')
+            self.Enter_Your_first_name()
+            return
+
         if self.constraint_obj.name_check(response):
             s = """(")"""
-            response (s[1] + response + s[1])
+            response = (s[1] + response + s[1])
             return response
         else:
             print("Try Again")
             self.Enter_Your_first_name()
 
     def Enter_Your_Last_name(self):
-        response = input("Please Enter your Last Name without spaces")
+        response = input("Please Enter your Last Name without spaces: ")
+        if len(response) == 0:
+            print('User Response is mandatory for this field')
+            self.Enter_Your_Last_name()
+            return
+
         if self.constraint_obj.name_check(response):
             s = """(")"""
-            response(s[1] + response + s[1])
+            response = (s[1] + response + s[1])
             return response
         else:
             print("Try Again")
             self.Enter_Your_Last_name()
 
     def Enter_D_O_B(self):
-        response = input("Please Enter Date Of Birth in format YYYYMMDD")
+        response = input("Please Enter Date Of Birth in format YYYYMMDD: ")
+        if len(response) == 0:
+            print('User Response is mandatory for this field')
+            self.Enter_D_O_B()
+            return
         if self.constraint_obj.D_O_B(response):
             date_formatted = "'" + response[:4:] + "-" + response[4:6:] + "-" + response[6::] + "'"
             return date_formatted
         else:
-            print(
-                "Oops! please Try Again, Your input format should be 8 digits in format YYYYMMD")
-            user_input = input("press ENTER to try agin with D-O-B or enter anything to go on homepage")
-            if bool(user_input):
-                Homepage()
-                return
-            else:
-                self.Enter_D_O_B()
+            # print(
+            #     "Oops! please Try Again, Your input format should be 8 digits in format YYYYMMD")
+            # user_input = input("press ENTER to try agin with D-O-B")
+            # if bool(user_input):
+            #     self.Enter_D_O_B()
+            # else:
+            #     self.Enter_D_O_B()
+            print("Try Again")
+            self.Enter_D_O_B()
+            return
 
     def Enter_Email(self):
         response = input("Please Enter a valid Email address: ")
+        if len(response) == 0:
+            print('User Response is mandatory for this field')
+            self.Enter_Email()
         if self.constraint_obj.email_id(response):
             s = """(")"""
-            response(s[1] + response + s[1])
+            response = (s[1] + response + s[1])
             return response
         else:
             print("Oops! try again with a valid Email address")
@@ -118,9 +160,12 @@ class Registeration:
 
     def Enter_pan_card(self):
         response = input("Please Enter a valid Pan Card without using spaces. For Eg:- 'ABCDE123F': ")
+        if len(response) == 0:
+            print('User Response is mandatory for this field')
+            self.Enter_pan_card()
         if self.constraint_obj.Pan_card(response):
             s = """(")"""
-            response(s[1] + response + s[1])
+            response = (s[1] + response + s[1])
             return response
         else:
             print("Oops! try again with a valid Pan Card without using spaces. For Eg:- 'ABCDE123F'")
@@ -129,9 +174,12 @@ class Registeration:
     def Enter_password(self):
         response = input(
             "Please Enter a valid password with atleast 1 each upper and lower case alphabet and a special character as well as a numeric value : ")
+        if len(response) == 0:
+            print('User Response is mandatory for this field')
+            self.Enter_password()
         if self.constraint_obj.password(response):
             s = """(")"""
-            response(s[1] + response + s[1])
+            response = (s[1] + response + s[1])
             return response
         else:
             print("Oops! Please Try again")
@@ -141,7 +189,7 @@ class Registeration:
         response = input(Question)
         if len(response) == 0:
             print('User Response is mandatory for this field')
-            self.storing_a_response()
+            self.storing_a_response(Question)
         else:
             return response
 
@@ -156,11 +204,11 @@ class Registeration:
         response = input(f"Enter the {per_or_temp} Address pincode")
         if len(response) == 0:
             print('User Response is mandatory for this field')
-            self.Enter_pincode()
+            self.Enter_pincode(per_or_temp)
             return
         if not self.query_obj_pincode.CheckInFunction("Pincode", response):
             print("Invalid Pincode! please try again")
-            self.Enter_pincode()
+            self.Enter_pincode(per_or_temp)
         else:
             office_names = self.data_query_obj.find_values_1arg("pincode", response, "Office_Name")
             index = [i + 1 for i in range(len(office_names))]
@@ -171,11 +219,14 @@ class Registeration:
             return response, office_names[ind]
 
     def register_user(self):
-        Mobile_no = self.Enter_mobile_no()
-        Aadhar_no = self.Enter_Aadhar_no()
-        First_name = self.Enter_Your_first_name()
-        Last_name = self.Enter_Your_Last_name()
-        D_O_B = self.Enter_D_O_B()
+        print("{:-^100}".format("Welcome to our Leap bank, Press enter to Continue with Registeration"))
+        print("\n")
+        i = input()
+        #Mobile_no = self.Enter_mobile_no() #done
+        #Aadhar_no = self.Enter_Aadhar_no()
+        #First_name = self.Enter_Your_first_name()
+        #Last_name = self.Enter_Your_Last_name()
+        #D_O_B = self.Enter_D_O_B()
         Email = self.Enter_Email()
         Pan_card = self.Enter_pan_card()
         password = self.Enter_password()

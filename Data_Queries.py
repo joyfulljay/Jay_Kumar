@@ -8,7 +8,7 @@ class Data_queries:
 
     def column(self, column_name):
         con = mySQLcon(self.database)
-        column_values = con.dql_query(f"select distinct{column_name} from {self.table_name}")
+        column_values = con.dql_query(f"select distinct({column_name}) from {self.table_name}")
         column_values_in_list = [x[0] for x in column_values]
         return column_values_in_list
 
