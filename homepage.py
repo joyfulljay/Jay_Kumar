@@ -1,8 +1,13 @@
+from Register import *
+from login import *
+from exit import *
+
+reg = Registeration()
 def run_process(option):
     if option == 1:
         login()
     elif option == 2:
-        Register()
+        reg.register_user()
     else:
         exitpage()
 

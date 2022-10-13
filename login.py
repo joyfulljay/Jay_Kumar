@@ -1,4 +1,4 @@
-from homepage import *
+from homepage import Homepage
 
 
 def login():
