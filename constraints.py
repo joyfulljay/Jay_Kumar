@@ -32,6 +32,9 @@ class constraints:
             print("oops, looks like you entered value out of bound")
 
     def password(self, user_response):
+        if len(user_response) == 0:
+            print('User Response is mandatory for this field')
+            return False
         if len(user_response) < 9:
             print('Please enter at least 9 character length of password')
             return False
@@ -73,6 +76,9 @@ class constraints:
                             return True
 
     def Aadhar_card(self, user_response):
+        if len(user_response) == 0:
+            print('User Response is mandatory for this field')
+            return False
         if self.spaces(user_response) and self.integer(user_response) and self.length(user_response, 12):
             return True
         else:
@@ -80,13 +86,19 @@ class constraints:
             return False
 
     def Mobile_no(self, user_response):
+        if len(user_response) == 0:
+            print('User Response is mandatory for this field')
+            return False
         if self.spaces(user_response) and self.integer(user_response) and self.length(user_response, 10):
             return True
         else:
-            print("Invalid Aadhar")
+            print("Invalid Mobile No.")
             return False
 
     def email_id(self, user_response):
+        if len(user_response) == 0:
+            print('User Response is mandatory for this field')
+            return False
         if not self.spaces(user_response):
             return False
 
@@ -104,7 +116,7 @@ class constraints:
             print("Invalid Email Address #2")
             return False
         else:
-            if user_response[poschar + 1] == '.':  #checking if email domain is exist or not
+            if user_response[poschar + 1] == '.':  # checking if email domain is exist or not
                 print("Invalid Email Address #3")
                 return False
             else:
@@ -112,7 +124,8 @@ class constraints:
                     print("Invalid Email Address #4")
                     return False
                 else:
-                    Global_domain = user_response[user_response.find('.', poschar)::]  # Extracting global domain from user input email
+                    Global_domain = user_response[user_response.find('.',
+                                                                     poschar)::]  # Extracting global domain from user input email
                     if Global_domain in Global_domains:  # Checking whether top level domain exists or not
                         return True
                     else:
@@ -120,6 +133,9 @@ class constraints:
                         return False
 
     def Pan_card(self, user_response):
+        if len(user_response) == 0:
+            print('User Response is mandatory for this field')
+            return False
         if not self.spaces(user_response):
             return False
         if not self.length_constraint(user_response, 10):
@@ -146,9 +162,26 @@ class constraints:
 
         return True
 
+    def D_O_B(self, user_response):
+        if len(user_response) == 0:
+            print('User Response is mandatory for this field')
+            return False
+        if self.spaces(user_response) and self.integer(user_response) and self.length(user_response, 8):
+            return True
+        else:
+            print("Invalid Date Of Birth")
+            return False
+
+    def name_check(self, user_response):
+        if len(user_response) == 0:
+            print('User Response is mandatory for this field')
+            return False
+        if self.spaces(user_response):
+            return True
+        else:
+            print("Invalid input")
+            return False
+
 
 obj = constraints()
 s = "AILPZ1213Z"
-
-
-
