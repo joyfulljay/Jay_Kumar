@@ -18,7 +18,7 @@ class Data_queries:
         column_values_in_list = [x[0] for x in column_values]
         return column_values_in_list
 
-    def find_string_values_1arg(self, column_name, value, column_req):
+    def find_values_1arg(self, column_name, value, column_req):
         con = mySQLcon(self.database)
         if column_req == "*":
             column_values = con.dql_query(
@@ -42,7 +42,7 @@ class Data_queries:
         column_values_in_list = [x for x in column_values[0]]
         return column_values_in_list
 
-    def find_string_values_2arg(self, column1_name, value1, column2_name, value2, column_req):
+    def find_values_2arg(self, column1_name, value1, column2_name, value2, column_req):
         con = mySQLcon(self.database)
         if column_req == "*":
             column_values = con.dql_query(
@@ -60,7 +60,8 @@ class Data_queries:
                 f"""(select distinct{column_req} from {self.table_name} where ({string_column_name} = "{value1}") and ({non_string_column_name} = {value2}))""")
         else:
             column_values = con.dql_query(
-                f"""(select distinct({column_req}) from {self.table_name} where ({string_column_name} = "{value1}") and ({non_string_column_name} = {value2}))""")
+                f"""(select distinct({column_req}) from {self.table_name} where ({string_column_name} = "{value1}") 
+                and ({non_string_column_name} = {value2}))""")
 
         column_values_in_list = [x for x in column_values[0]]
         return column_values_in_list
