@@ -162,6 +162,6 @@ class constraints:
             return False
 
 
-obj = constraints()
-s = "AILPZ1213Z"
-print(obj.integer(s))
+# obj = constraints()
+# s = "AILPZ1213Z"
+# print(obj.integer(s))

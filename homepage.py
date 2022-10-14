@@ -4,20 +4,19 @@ from exit import exitpage
 
 
 def run_process(option):
-    if len(option) == 0:
-        exitpage()
-        return
     try:
         if int(option) == 1:
             login()
             Homepage()
         elif int(option) == 2:
+            print("{:-^100}".format("Welcome to our Leap bank, Press enter to Continue with Registeration"))
+            print("\n")
+            i = input("Press anything to Continue--> ")
             reg = Registeration()
             reg.register_user()
-            exitpage()
+            Homepage()
     except:
         exitpage()
-
 
 
 def Homepage():
