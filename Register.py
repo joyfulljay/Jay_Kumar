@@ -15,9 +15,10 @@ class Registeration:
         self.query_obj_pincode = helper_query("BANKING", "PincodeDB")
         self.data_query_obj = Data_queries("PincodeDB", "BANKING")
         self.schema_obj = Output_schema()
-        self.pointer = 0
+        self.backtar = 0
+        self.pointer = 1
         self.mandatory_obj = mandatory()
-        self.t = 0
+        self.t = 1
 
     def Enter_mobile_no(self):
         print("Step 1")
@@ -124,6 +125,7 @@ class Registeration:
             print("Try Again")
             out = self.Enter_Your_Last_name()
             return out
+
     def Enter_D_O_B(self):
         response = input("Please Enter Date Of Birth in format YYYYMMDD: ")
         if len(response) == 0:
@@ -239,16 +241,18 @@ class Registeration:
 
     def register_user(self):
         if self.pointer > 0:
-            check = input(f"1.) Go back on previous step.\n2.) Go back to Home page \nPress enter to continue to next step (step {self.pointer+1})         ")
+            check = input(
+                f"1.) Go back on previous step.\n2.) Go back to restart registeration. \n3.) Go back to Home page \nPress enter to continue to next step (step {self.pointer + 1})         ")
             try:
                 if int(check) == 1:
                     self.pointer = self.pointer - 1
-                    return
-                elif int(check) == 2:
+                elif int(check) == 3:
                     self.pointer = 13
+                elif int(check) == 2:
+                    self.register_user()
+                    return
             except:
                 print("Go on....")
-
 
         if self.pointer == 0:
             self.Mobile_no = self.Enter_mobile_no()  # done
@@ -284,17 +288,21 @@ class Registeration:
             self.temp_pincode, self.temp_office_name = self.Enter_pincode("Temporary")
             self.register_user()
         elif self.pointer == 11:
-            self.permanent_address = self.data_query_obj.find_values_2arg("pincode", self.per_pincode, "Office_name", self.per_office_name, "*")
+            self.permanent_address = self.data_query_obj.find_values_2arg("pincode", self.per_pincode, "Office_name",
+                                                                          self.per_office_name, "*")
             self.register_user()
         elif self.pointer == 12:
             self.Temporary_address = self.data_query_obj.find_values_2arg("pincode", self.temp_pincode, "Office_name",
-                                                                     self.temp_office_name, "*")
+                                                                          self.temp_office_name, "*")
             self.register_user()
         elif self.pointer == 13:
-            return
+            print(self.backtar)
+            self.backtar+=1
+            print(self.pointer)
         else:
             print(f"Register_user function complted without any action so pointer value is {self.pointer}")
 
+        print("nitin")
 
         print(
             f"insert into Registeration (First_name, Last_name, D_O_B, Permanent_address_pincode, Current_address_pincode, Aadhar_card, Mobile_no, Email , Pan_card, Account_status) values ({self.First_name},{self.Last_name},{self.D_O_B},{self.per_pincode},{self.temp_pincode},{self.Aadhar_no},{self.Mobile_no},{self.Email},{self.Pan_card},'Active')")
@@ -303,7 +311,6 @@ class Registeration:
         # f"create table benifeciary_{Mobile_no} (Benificiary_name varchar(100), Benificiary_Account_no varchar(100)"
         # f"create table account_details_{Mobile_no} (Account_no bigint, Name varchar(50), account_balance bigint)"
         # f"insert into personal_details_{Mobile_no} (Firstname, D_O_B , Mobile_no, Email, Office_name, District, State) values ({})"
-
 
 # obj = Registeration()
 #

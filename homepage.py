@@ -1,6 +1,6 @@
 from Register import Registeration
 from login import *
-from exit import exitpage
+# from exit import exitpage
 
 
 def run_process(option):
@@ -14,9 +14,12 @@ def run_process(option):
             i = input("Press anything to Continue--> ")
             reg = Registeration()
             reg.register_user()
+            print("gfwegdekhs")
             Homepage()
+
     except:
-        exitpage()
+        # exitpage()
+        print("")
 
 
 def Homepage():
