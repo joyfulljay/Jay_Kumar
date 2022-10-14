@@ -73,14 +73,14 @@ class constraints:
         if self.spaces(user_response) and self.integer(user_response) and self.length_constraint(user_response, 12):
             return True
         else:
-            #print("Invalid Aadhar")
+            # print("Invalid Aadhar")
             return False
 
     def Mobile_no(self, user_response):
         if self.spaces(user_response) and self.integer(user_response) and self.length_constraint(user_response, 10):
             return True
         else:
-            #print("Invalid Mobile No.")
+            # print("Invalid Mobile No.")
             return False
 
     def email_id(self, user_response):
@@ -145,16 +145,20 @@ class constraints:
 
     def D_O_B(self, user_response):
         if self.spaces(user_response) and self.integer(user_response) and self.length_constraint(user_response, 8):
-            return True
+            if self.range(int(user_response[4:6:1]), 0, 13) and self.range(int(user_response[6::]), 0, 31):
+                return True
+            else:
+                print("Invalid date")
+                return False
         else:
-            #print("Invalid Date Of Birth")
+            # print("Invalid Date Of Birth")
             return False
 
     def name_check(self, user_response):
         if self.spaces(user_response):
             return True
         else:
-            #print("Invalid input")
+            # print("Invalid input")
             return False
 
 

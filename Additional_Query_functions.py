@@ -9,10 +9,10 @@ class helper_query:
 
     def CheckInFunction(self, column_name, value):
         values = self.obj.column(column_name)
-        if value in values:
+        if int(value) in values:
             return True
         else:
             return False
 
-    def map_value(self,to_map_column, to_map_on_value, map_with_column, value_to_be_checked):
+    def map_value(self, to_map_column, to_map_on_value, map_with_column, value_to_be_checked):
         print("will complete later")

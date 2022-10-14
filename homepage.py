@@ -6,13 +6,16 @@ from exit import exitpage
 def run_process(option):
     if len(option) == 0:
         exitpage()
-    elif int(option) == 1:
-        login()
-        Homepage()
-    elif int(option) == 2:
-        reg = Registeration()
-        reg.register_user()
-    else:
+        return
+    try:
+        if int(option) == 1:
+            login()
+            Homepage()
+        elif int(option) == 2:
+            reg = Registeration()
+            reg.register_user()
+            exitpage()
+    except:
         exitpage()
 
 
