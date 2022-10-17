@@ -1,6 +1,7 @@
+import time
+
 from constraints import *
 from Additional_Query_functions import *
-from login import *
 from Data_Queries import *
 from Output_Schema import *
 from mysqlconnector import *
@@ -258,6 +259,13 @@ class Registeration:
             out = self.Enter_pincode(per_or_temp)
             return out
 
+    def insert_card_details(self, type_, username):
+        card_no = int(time.time())
+        cvv = int(1000 * (random.random() + 0.1))
+        pin = self.taking_input("Enter a valid 4 digit pin: ", 4, 9999)
+        self.run_query_obj.run_query(
+            f"""INSERT INTO CARD_DETAILS_{username} (CARD_NO, TYPE_OF_CARD , CVV , PIN) VALUES ({card_no}, "{type_}" ,{cvv}, {pin})""")
+
     def update_before_finalise(self):
         if self.pointer == 7:
             self.Mobile_no = self.Enter_mobile_no()  # done
@@ -446,7 +454,13 @@ class Registeration:
             print(
                 f"""insert into Login_Details values ({self.Mobile_no}, {self.password}, "{self.security_answers[0]}", "{self.security_answers[1]}", "{self.security_answers[2]}")""")
 
-        self.run_query_obj.run_query(f"CREATE TABLE CARD_DETAILS_{self.Mobile_no} (CARD_NO BIGINT PRIMARY KEY , TYPE_OF_CARD ENUM('DEBIT CARD', 'CREDIT CARD'), STATUS_OF_CARD ENUM('ACTIVATED','DEACTIVATED') DEFAULT 'ACTIVATED', CVV INT NOT NULL, PIN INT NOT NULL)")
+        self.run_query_obj.run_query(
+            f"CREATE TABLE CARD_DETAILS_{self.Mobile_no} (CARD_NO BIGINT PRIMARY KEY , TYPE_OF_CARD ENUM('DEBIT CARD', 'CREDIT CARD'), STATUS_OF_CARD ENUM('ACTIVATED','DEACTIVATED') DEFAULT 'ACTIVATED', CVV INT NOT NULL,CARD_BALANCE BIGINT NOT NULL DEFAULT 0 ,PIN INT NOT NULL)")
+
+        a = input("Press Enter to registering a Credit Card")
+        self.insert_card_details("CREDIT CARD", self.Mobile_no)
+        a = input("Press Enter to registering a Debit Card")
+        self.insert_card_details("DEBIT CARD", self.Mobile_no)
 
         print(f"Hey! you got a joining reward of Rs {acc_balance}/-")
         a = input("Press Enter to go to the Homepage")

@@ -1,6 +1,7 @@
 from Data_Queries import Data_queries
 from Output_Schema import *
 from constraints import *
+from mysqlconnector import mySQLcon
 import time
 import random
 
@@ -17,6 +18,7 @@ class login:
         self.query_bd = Data_queries(f"Benifeciary_{user_name}", "BANKING")
         self.query_cd = Data_queries(f"CARD_DETAILS_{self.Mobile_no}", "BANKING")
         self.query_reg = Data_queries("Registeration", " BANKING")
+        self.sqlCon = mySQLcon()
         self.view_schema = Output_schema()
         self.constraint_obj = constraints()
 
@@ -47,7 +49,7 @@ class login:
             for i in range(len(j) - 1):
                 extract_row.append(j[i])
             extract_details.append(extract_row)
-        template = ["Card Number", "Type of Card", "Status of card", "CVV"]
+        template = ["Card Number", "Type of Card", "Status of card", "CVV", "Card Balance"]
         self.view_schema.table_with_row_wise_input(template, extract_details)
 
     def taking_input(self, parameter, leng, Range):
@@ -61,15 +63,22 @@ class login:
         else:
             return out1
 
+    def insert_card_details(self, type_):
+        card_no = int(time.time())
+        cvv = int(1000 * (random.random() + 0.1))
+        pin = self.taking_input("Enter a valid 4 digit pin: ", 4, 9999)
+        self.sqlCon.run_query(
+            f"INSERT INTO CARD_DETAILS_{self.username} (CARD_NO, TYPE_OF_CARD , CVV , PIN) VALUES ({card_no}, {type_} ,{cvv}, {pin})")
+
     def add_new_card(self):
 
         type_of_card = self.taking_input("1.) Debit Card \n2.) Credit Card \nPlease response with a valid argument "
                                          "according to your choice: ", 1, 2)
-        card_no = int(time.time())
-        cvv = int(1000*(random.random()+0.1))
-        pin = self.input("Enter a valid 4 digit pin: ", 4, 9999)
-
-
+        if type_of_card == 1:
+            type_ = "DEBIT CARD"
+        elif type_of_card == 1:
+            type_ = "CREDIT CARD"
+        self.insert_card_details(type_of_card)
 
 obj = login('6264672891')
 obj.show_personal_details()
