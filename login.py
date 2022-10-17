@@ -16,9 +16,9 @@ class login:
         self.query_pd = Data_queries(f"personal_details_{user_name}", "BANKING")
         self.query_ad = Data_queries(f"account_details_{user_name}", "BANKING")
         self.query_bd = Data_queries(f"Benifeciary_{user_name}", "BANKING")
-        self.query_cd = Data_queries(f"CARD_DETAILS_{self.Mobile_no}", "BANKING")
+        self.query_cd = Data_queries(f"CARD_DETAILS_{user_name}", "BANKING")
         self.query_reg = Data_queries("Registeration", " BANKING")
-        self.sqlCon = mySQLcon()
+        self.sqlCon = mySQLcon("BANKING")
         self.view_schema = Output_schema()
         self.constraint_obj = constraints()
 
@@ -43,14 +43,17 @@ class login:
 
     def show_card_details(self):
         card_details = self.query_bd.find_values_1arg('1', '1', "*")
+        print(card_details)
         extract_details = []
         for j in card_details:
             extract_row = []
             for i in range(len(j) - 1):
                 extract_row.append(j[i])
             extract_details.append(extract_row)
+        print(extract_details)
         template = ["Card Number", "Type of Card", "Status of card", "CVV", "Card Balance"]
         self.view_schema.table_with_row_wise_input(template, extract_details)
+        temp_input = input("Press Enter To Go back to Home")
 
     def taking_input(self, parameter, leng, Range):
         out1 = input(parameter)
@@ -80,9 +83,12 @@ class login:
             type_ = "CREDIT CARD"
         self.insert_card_details(type_of_card)
 
-# obj = login('6264672891')
-# obj.show_personal_details()
-# print("")
-# obj.show_account_details()
-# print("")
-# obj.show_list_of_beneficiary()
+
+obj = login('6264242775')
+obj.show_personal_details()
+print("")
+obj.show_account_details()
+print("")
+obj.show_list_of_beneficiary()
+print("")
+obj.show_card_details()
