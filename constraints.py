@@ -73,7 +73,9 @@ class constraints:
                             return True
 
     def Aadhar_card(self, user_response):
-        if self.spaces(user_response) and self.integer(user_response) and self.length_constraint(user_response, 12):
+        if self.spaces(user_response) and self.integer(user_response) and self.length_constraint(user_response,
+                                                                                                 12) and self.range(
+            int(user_response), 1000100010001000):
             return True
         else:
             # print("Invalid Aadhar")
@@ -82,7 +84,7 @@ class constraints:
     def Mobile_no(self, user_response):
         if self.spaces(user_response) and self.integer(user_response) and self.length_constraint(user_response,
                                                                                                  10) and self.range(
-                user_response, 6000000000, 9999999999):
+            int(user_response), 6000000000, 9999999999):
             return True
         else:
             # print("Invalid Mobile No.")
@@ -169,7 +171,7 @@ class constraints:
     def input_constraint(self, user_response, leng, Range):
         if self.spaces(user_response) and self.integer(user_response) and self.length_constraint(user_response,
                                                                                                  leng) and self.range(
-                int(user_response), 0, Range + 1):
+            int(user_response), 0, Range + 1):
             return True
             # if self.range(int(user_response[4:6:1]), 0, 13) and self.range(int(user_response[6::]), 0, 31):
             #     return True

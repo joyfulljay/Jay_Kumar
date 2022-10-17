@@ -23,7 +23,7 @@ class Data_queries:
         if column_req == "*":
             column_values = con.dql_query(
                 f"""(select distinct{column_req} from {self.table_name} where {column_name} = "{value}")""")
-            column_values_in_list = [x for x in column_values]
+            column_values_in_list = [list(x) for x in column_values]
             return column_values_in_list
         else:
             column_values = con.dql_query(

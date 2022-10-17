@@ -21,7 +21,7 @@ class Registeration:
         self.pointer = 0
         self.b = True
         self.mandatory_obj = mandatory()
-        self.t = 1
+        self.t = 0
 
     def Enter_mobile_no(self):
         print("Step 1")
@@ -217,7 +217,7 @@ class Registeration:
         if bo_ol:
             response = input(Question)
         else:
-            response = self.taking_input("Q.2) What is the last 4 digits of mobile no. you first learned: ", 4, 10000)
+            response = self.taking_input(Question, 4, 10000)
         if len(response) == 0:
             print('User Response is mandatory for this field')
             out = self.storing_a_response(Question)
@@ -229,7 +229,7 @@ class Registeration:
         print("Security Questions for Password recovery")
         A1 = self.storing_a_response("Q.1) What is your first crush name: ", True)
         A2 = self.storing_a_response("Q.2) What is the last 4 digits of mobile no. you first learned: ", False)
-        A3 = self.storing_a_response("Q.3) What is Your favourite movie: ", True)
+        A3 = self.storing_a_response("Q.3) What was your current/last crush first name: ", True)
         Answer = (A1, A2, A3)
         self.pointer = self.pointer + 1
         return Answer

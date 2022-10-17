@@ -3,10 +3,10 @@ from tabulate import tabulate
 
 class Output_schema:
 
-    def table_with_single_row(self, headerlist, values):
+    def table_with_row_wise_input(self, headerlist, values):
         print(tabulate(values, headerlist))
 
-    def table_with_lists(self, headerlist, *dataattri):
+    def table_with_column_wise_input(self, headerlist, *dataattri):
         columns = []
         table = []
         for arg in dataattri:
