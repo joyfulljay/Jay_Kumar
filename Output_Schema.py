@@ -3,6 +3,9 @@ from tabulate import tabulate
 
 class Output_schema:
 
+    def table_with_single_row(self, headerlist, values):
+        print(tabulate(values, headerlist))
+
     def table_with_lists(self, headerlist, *dataattri):
         columns = []
         table = []

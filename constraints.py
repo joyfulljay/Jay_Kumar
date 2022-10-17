@@ -1,3 +1,6 @@
+import datetime
+
+
 class constraints:
 
     def spaces(self, user_response):
@@ -77,7 +80,9 @@ class constraints:
             return False
 
     def Mobile_no(self, user_response):
-        if self.spaces(user_response) and self.integer(user_response) and self.length_constraint(user_response, 10):
+        if self.spaces(user_response) and self.integer(user_response) and self.length_constraint(user_response,
+                                                                                                 10) and self.range(
+                user_response, 6000000000, 9999999999):
             return True
         else:
             # print("Invalid Mobile No.")
@@ -143,16 +148,43 @@ class constraints:
 
         return True
 
-    def D_O_B(self, user_response):
-        if self.spaces(user_response) and self.integer(user_response) and self.length_constraint(user_response, 8):
-            if self.range(int(user_response[4:6:1]), 0, 13) and self.range(int(user_response[6::]), 0, 31):
-                return True
-            else:
-                print("Invalid date")
-                return False
+    def is_valid_date(self, year, month, day):
+        isValidDate = True
+        try:
+            datetime.datetime(int(year), int(month), int(day))
+        except ValueError:
+            print("Date does not exist")
+            isValidDate = False
+        return isValidDate
+
+    def Age_constraint(self, birthDate):
+        today = datetime.date.today()
+        age = today.year - birthDate.year - ((today.month, today.day) < (birthDate.month, birthDate.day))
+        if age >= 18:
+            return True
+        else:
+            print(f"You have to wait {18 - age} years to create account.(Age should be greater than 18 years)")
+            return False
+
+    def input_constraint(self, user_response, leng, Range):
+        if self.spaces(user_response) and self.integer(user_response) and self.length_constraint(user_response,
+                                                                                                 leng) and self.range(
+                int(user_response), 0, Range + 1):
+            return True
+            # if self.range(int(user_response[4:6:1]), 0, 13) and self.range(int(user_response[6::]), 0, 31):
+            #     return True
+            # else:
+            #     print("Invalid date")
+            #     return False
         else:
             # print("Invalid Date Of Birth")
             return False
+
+    # def input_constraint(self, user_response, leng, Range):
+    #     if self.spaces(user_response) and self.integer(user_response) and self.length_constraint(user_response, leng) and self.range(int(user_response), 0, Range + 1):
+    #         return True
+    #     else:
+    #         return False
 
     def name_check(self, user_response):
         if self.spaces(user_response):
@@ -161,7 +193,5 @@ class constraints:
             # print("Invalid input")
             return False
 
-
 # obj = constraints()
-# s = "AILPZ1213Z"
-# print(obj.integer(s))
+# print(obj.is_valid_date(2021, 4, 20))

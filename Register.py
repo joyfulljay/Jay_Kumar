@@ -5,6 +5,8 @@ from Data_Queries import *
 from Output_Schema import *
 from mysqlconnector import *
 from Additional_functions import mandatory
+import datetime
+import random
 
 
 class Registeration:
@@ -12,11 +14,12 @@ class Registeration:
         self.run_query_obj = mySQLcon("BANKING")
         self.constraint_obj = constraints()
         self.query_obj = helper_query("BANKING", "Registeration")
+        self.Data_query_obj = Data_queries("Registeration", "BANKING")
         self.query_obj_pincode = helper_query("BANKING", "PincodeDB")
         self.data_query_obj = Data_queries("PincodeDB", "BANKING")
         self.schema_obj = Output_schema()
-        self.backtar = 0
-        self.pointer = 1
+        self.pointer = 0
+        self.b = True
         self.mandatory_obj = mandatory()
         self.t = 1
 
@@ -59,9 +62,9 @@ class Registeration:
             self.Enter_mobile_no()
 
     def Enter_Aadhar_no(self):
+        print("Step 2")
         response = input("Please enter the 12 digits valid Aadhar no: ")
-        if len(response) == 0:
-            print('User Response is mandatory for this field')
+        if not self.mandatory_obj.is_mandatory(response, True):
             self.Enter_Aadhar_no()
             return
 
@@ -93,9 +96,9 @@ class Registeration:
                 return out
 
     def Enter_Your_first_name(self):
+        print("Step 3")
         response = input("Please Enter your First Name without spaces: ")
-        if len(response) == 0:
-            print('User Response is mandatory for this field')
+        if not self.mandatory_obj.is_mandatory(response, True):
             out = self.Enter_Your_first_name()
             return out
 
@@ -110,9 +113,9 @@ class Registeration:
             return out
 
     def Enter_Your_Last_name(self):
+        print("Step 4")
         response = input("Please Enter your Last Name without spaces: ")
-        if len(response) == 0:
-            print('User Response is mandatory for this field')
+        if not self.mandatory_obj.is_mandatory(response, True):
             out = self.Enter_Your_Last_name()
             return out
 
@@ -126,20 +129,32 @@ class Registeration:
             out = self.Enter_Your_Last_name()
             return out
 
-    def Enter_D_O_B(self):
-        response = input("Please Enter Date Of Birth in format YYYYMMDD: ")
-        if len(response) == 0:
-            print('User Response is mandatory for this field')
-            out = self.Enter_D_O_B()
+    def taking_input(self, parameter, leng, Range):
+        out1 = input(parameter)
+        if not self.mandatory_obj.is_mandatory(out1, True):
+            out = self.taking_input(parameter, leng, Range)
             return out
-        if self.constraint_obj.D_O_B(response):
+        if not self.constraint_obj.input_constraint(out1, leng, Range):
+            out = self.taking_input(parameter, leng, Range)
+            return out
+        else:
+            return out1
+
+    def Enter_D_O_B(self):
+        print("Step 5")
+        day = self.taking_input("Enter the day of birth 'dd' : ", 2, 31)
+        month = self.taking_input("Enter the month of birth 'mm' : ", 2, 12)
+        year = self.taking_input("Enter the year of birth 'yyyy' : ", 4, 2022)
+        response = year + month + day
+        if self.constraint_obj.is_valid_date(int(year), int(month), int(day)) and self.constraint_obj.Age_constraint(
+                datetime.date(int(year), int(month), int(day))):
             date_formatted = "'" + response[:4:] + "-" + response[4:6:] + "-" + response[6::] + "'"
             self.pointer = self.pointer + 1
             return date_formatted
         else:
             # print(
-            #     "Oops! please Try Again, Your input format should be 8 digits in format YYYYMMD")
-            # user_input = input("press ENTER to try agin with D-O-B")
+            #     "Oops! please Try Again, Your input format should be 8 digits in format YYYYMMDD")
+            # user_input = input("press ENTER to try again with D-O-B")
             # if bool(user_input):
             #     self.Enter_D_O_B()
             # else:
@@ -149,6 +164,7 @@ class Registeration:
             return out
 
     def Enter_Email(self):
+        print("Step 6")
         response = input("Please Enter a valid Email address: ")
         if len(response) == 0:
             print('User Response is mandatory for this field')
@@ -197,8 +213,11 @@ class Registeration:
             out = self.Enter_password()
             return out
 
-    def storing_a_response(self, Question):
-        response = input(Question)
+    def storing_a_response(self, Question, bo_ol):
+        if bo_ol:
+            response = input(Question)
+        else:
+            response = self.taking_input("Q.2) What is the last 4 digits of mobile no. you first learned: ", 4, 10000)
         if len(response) == 0:
             print('User Response is mandatory for this field')
             out = self.storing_a_response(Question)
@@ -207,9 +226,10 @@ class Registeration:
             return response
 
     def Enter_Security_questions(self):
-        A1 = self.storing_a_response("Q.1) What is your first crush name: ")
-        A2 = self.storing_a_response("Q.2) What is the last 4 digits of mobile no. you first learned: ")
-        A3 = self.storing_a_response("Q.3) What is Your favourite movie: ")
+        print("Security Questions for Password recovery")
+        A1 = self.storing_a_response("Q.1) What is your first crush name: ", True)
+        A2 = self.storing_a_response("Q.2) What is the last 4 digits of mobile no. you first learned: ", False)
+        A3 = self.storing_a_response("Q.3) What is Your favourite movie: ", True)
         Answer = (A1, A2, A3)
         self.pointer = self.pointer + 1
         return Answer
@@ -230,24 +250,55 @@ class Registeration:
                 index = [i + 1 for i in range(len(office_names))]
                 header_list = ["Options", "Near By Office Names"]
                 self.schema_obj.table_with_lists(header_list, index, office_names)
-                print("")
-                ind = int(input("Please select near by location: "))
+                print(len(office_names))
+                ind = self.taking_input("Select nearby office : ", 1, len(office_names))
                 self.pointer = self.pointer + 1
-                return response, office_names[ind - 1]
+                return response, office_names[int(ind) - 1]
         else:
             print("Try Again")
             out = self.Enter_pincode(per_or_temp)
             return out
 
+    def update_before_finalise(self):
+        if self.pointer == 7:
+            self.Mobile_no = self.Enter_mobile_no()  # done
+        elif self.pointer == 6:
+            self.Aadhar_no = self.Enter_Aadhar_no()
+        elif self.pointer == 1:
+            self.First_name = self.Enter_Your_first_name()
+        elif self.pointer == 2:
+            self.Last_name = self.Enter_Your_Last_name()
+        elif self.pointer == 3:
+            self.D_O_B = self.Enter_D_O_B()
+        elif self.pointer == 8:
+            self.Email = self.Enter_Email()
+        elif self.pointer == 9:
+            self.Pan_card = self.Enter_pan_card()
+        elif self.pointer == 4:
+            self.per_pincode, self.per_office_name = self.Enter_pincode("Permanent")
+            self.permanent_address = self.data_query_obj.find_values_2arg("pincode", self.per_pincode, "Office_name",
+                                                                          self.per_office_name, "*")
+        elif self.pointer == 5:
+            self.temp_pincode, self.temp_office_name = self.Enter_pincode("Temporary")
+            self.Temporary_address = self.data_query_obj.find_values_2arg("pincode", self.temp_pincode, "Office_name",
+                                                                          self.temp_office_name, "*")
+        self.values = [self.First_name[1:-1:], self.Last_name[1:-1:], self.D_O_B[1:-1:], (
+            f"{self.permanent_address[3]}, {self.permanent_address[7]}, {self.permanent_address[8]}, ({self.per_pincode})"),
+                       (
+                           f"{self.Temporary_address[3]}, {self.Temporary_address[7]}, {self.Temporary_address[8]}, ({self.temp_pincode})"),
+                       self.Aadhar_no, self.Mobile_no, self.Email[1:-1:], self.Pan_card[1:-1:]]
+
     def register_user(self):
-        if self.pointer > 0:
+        if (self.pointer > 0) and (self.pointer < 11):
             check = input(
-                f"1.) Go back on previous step.\n2.) Go back to restart registeration. \n3.) Go back to Home page \nPress enter to continue to next step (step {self.pointer + 1})         ")
+                f"1.) Go back on previous step.\n2.) Go back to restart registeration. \n3.) Go back to Home page "
+                f"\nPress enter to continue to next step (step {self.pointer + 1})         ")
             try:
                 if int(check) == 1:
                     self.pointer = self.pointer - 1
                 elif int(check) == 3:
                     self.pointer = 13
+                    self.b = False
                 elif int(check) == 2:
                     self.register_user()
                     return
@@ -256,62 +307,148 @@ class Registeration:
 
         if self.pointer == 0:
             self.Mobile_no = self.Enter_mobile_no()  # done
-            self.register_user()
+            out = self.register_user()
+            return out
         elif self.pointer == 1:
             self.Aadhar_no = self.Enter_Aadhar_no()
-            self.register_user()
+            out = self.register_user()
+            return out
         elif self.pointer == 2:
             self.First_name = self.Enter_Your_first_name()
-            self.register_user()
+            out = self.register_user()
+            return out
         elif self.pointer == 3:
             self.Last_name = self.Enter_Your_Last_name()
-            self.register_user()
+            out = self.register_user()
+            return out
         elif self.pointer == 4:
             self.D_O_B = self.Enter_D_O_B()
-            self.register_user()
+            out = self.register_user()
+            return out
         elif self.pointer == 5:
             self.Email = self.Enter_Email()
-            self.register_user()
+            out = self.register_user()
+            return out
         elif self.pointer == 6:
             self.Pan_card = self.Enter_pan_card()
-            self.register_user()
+            out = self.register_user()
+            return out
         elif self.pointer == 7:
             self.password = self.Enter_password()
-            self.register_user()
+            out = self.register_user()
+            return out
         elif self.pointer == 8:
             self.security_answers = self.Enter_Security_questions()
-            self.register_user()
+            out = self.register_user()
+            return out
         elif self.pointer == 9:
             self.per_pincode, self.per_office_name = self.Enter_pincode("Permanent")
-            self.register_user()
+            out = self.register_user()
+            return out
         elif self.pointer == 10:
             self.temp_pincode, self.temp_office_name = self.Enter_pincode("Temporary")
-            self.register_user()
+            out = self.register_user()
+            return out
         elif self.pointer == 11:
             self.permanent_address = self.data_query_obj.find_values_2arg("pincode", self.per_pincode, "Office_name",
                                                                           self.per_office_name, "*")
-            self.register_user()
+            self.pointer += 1
+            out = self.register_user()
+            return out
         elif self.pointer == 12:
             self.Temporary_address = self.data_query_obj.find_values_2arg("pincode", self.temp_pincode, "Office_name",
                                                                           self.temp_office_name, "*")
-            self.register_user()
+            self.pointer += 1
+            out = self.register_user()
+            return out
         elif self.pointer == 13:
-            print(self.backtar)
-            self.backtar+=1
-            print(self.pointer)
+            if self.b:
+                self.tempelate = ["1.) First name", "2.) Last Name", "3.) Date of Birth", "4.) Permanent Address",
+                                  "5.) Temporary Address", "6.) Aadhar No.", "7.) Mobile No.", "8.) Email",
+                                  "9.) Pan Card"]
+                self.values = [self.First_name[1:-1:], self.Last_name[1:-1:], self.D_O_B[1:-1:], (
+                    f"{self.permanent_address[3]}, {self.permanent_address[7]}, {self.permanent_address[8]}, ({self.per_pincode})"),
+                               (
+                                   f"{self.Temporary_address[3]}, {self.Temporary_address[7]}, {self.Temporary_address[8]}, ({self.temp_pincode})"),
+                               self.Aadhar_no, self.Mobile_no, self.Email[1:-1:], self.Pan_card[1:-1:]]
+                return self.b
+
         else:
-            print(f"Register_user function complted without any action so pointer value is {self.pointer}")
+            print(f"Register_user function completed without any action so pointer value is {self.pointer}")
 
-        print("nitin")
+    def last_check(self):
+        print("Please Verify details")
+        self.schema_obj.table_with_lists(self.tempelate, [self.values[0]], [self.values[1]], [self.values[2]],
+                                         [self.values[3]], [self.values[4]], [self.values[5]], [self.values[6]],
+                                         [self.values[7]], [self.values[8]])
+        arg = input("Press enter to continue with these details or press field no. to update: ")
+        if len(arg) == 0:
+            return
+        elif self.constraint_obj.input_constraint(arg, 1, 9):
+            self.pointer = int(arg)
+            self.update_before_finalise()
+            self.last_check()
+            return
+        else:
+            print("Invalid field, Try again!")
+            self.last_check()
 
-        print(
-            f"insert into Registeration (First_name, Last_name, D_O_B, Permanent_address_pincode, Current_address_pincode, Aadhar_card, Mobile_no, Email , Pan_card, Account_status) values ({self.First_name},{self.Last_name},{self.D_O_B},{self.per_pincode},{self.temp_pincode},{self.Aadhar_no},{self.Mobile_no},{self.Email},{self.Pan_card},'Active')")
-        # self.run_query_obj.run_query(f"insert into Registeration (First_name, Last_name, D_O_B, Permanent_address_pincode, Current_address_pincode, Aadhar_card, Mobile_no, Email , Pan_card, Account_status) values ({First_name},{Last_name},{D_O_B},{per_pincode},{temp_pincode},{Aadhar_no},{Mobile_no},{Email},{Pan_card},'Active')")
-        # f"create table personal_details_{Mobile_no} (Firstname varchar(100), Last_name varchar(100) D_O_B date, Mobile_no bigint, Email varchar(100), Office_name varchar(50), District varchar(50), State varchar(50))"
-        # f"create table benifeciary_{Mobile_no} (Benificiary_name varchar(100), Benificiary_Account_no varchar(100)"
-        # f"create table account_details_{Mobile_no} (Account_no bigint, Name varchar(50), account_balance bigint)"
-        # f"insert into personal_details_{Mobile_no} (Firstname, D_O_B , Mobile_no, Email, Office_name, District, State) values ({})"
+    def database_creation(self):
+        try:
+            self.run_query_obj.run_query(
+                f"insert into Registeration (First_name, Last_name, D_O_B, Permanent_address_pincode, Current_address_pincode, Aadhar_card, Mobile_no, Email , Pan_card, Account_status) values ({self.First_name},{self.Last_name},{self.D_O_B},{self.per_pincode},{self.temp_pincode},{self.Aadhar_no},{self.Mobile_no},{self.Email},{self.Pan_card},'Active')")
+        except:
+            print("two")
+        try:
+            acc_no = self.Data_query_obj.find_values_1arg("Mobile_no", self.Mobile_no, "Account_no")
+        except:
+            print("two")
+        try:
+            name = self.First_name[:-1:] + " " + self.Last_name[1::]
+        except:
+            print("four")
+        try:
+            self.run_query_obj.run_query(
+                f"create table personal_details_{self.Mobile_no} (Fullname varchar(100), D_O_B date, Mobile_no bigint, Email varchar(100), Office_name varchar(50), District varchar(50), State varchar(50))")
+        except:
+            print("five")
+        try:
+            self.run_query_obj.run_query(
+                f"create table Benifeciary_{self.Mobile_no} (Benificiary_name varchar(100), Benificiary_Account_no BIGINT)")
+        except:
+            print("six")
+
+        try:
+            self.run_query_obj.run_query(
+                f"create table account_details_{self.Mobile_no} (Account_no bigint, holders_Name varchar(50), account_balance int)")
+        except:
+            print("seven")
+
+        try:
+            self.run_query_obj.run_query(
+                f"""insert into personal_details_{self.Mobile_no} values ({name}, {self.D_O_B} , {self.Mobile_no}, {self.Email}, "{self.permanent_address[3]}", "{self.permanent_address[7]}", "{self.permanent_address[8]}")""")
+        except:
+            print(
+                f"""insert into personal_details_{self.Mobile_no} values ({name}, {self.D_O_B} , {self.Mobile_no}, {self.Email}, "{self.permanent_address[3]}", "{self.permanent_address[7]}", "{self.permanent_address[8]}")""")
+        try:
+            acc_balance = int(1000 * random.random())
+        except:
+            print("nine")
+        try:
+            self.run_query_obj.run_query(
+                f"""insert into account_details_{self.Mobile_no} values ({acc_no[0]}, {name}, {acc_balance})""")
+        except Exception as inst:
+            print(inst)
+
+        try:
+            self.run_query_obj.run_query(
+                f"""insert into Login_Details values ({self.Mobile_no}, {self.password}, "{self.security_answers[0]}", "{self.security_answers[1]}", "{self.security_answers[2]}")""")
+        except:
+            print(
+                f"""insert into Login_Details values ({self.Mobile_no}, {self.password}, "{self.security_answers[0]}", "{self.security_answers[1]}", "{self.security_answers[2]}")""")
+
+        print(f"Hey! you got a joining reward of Rs {acc_balance}/-")
+        a = input("Press Enter to go to the Homepage")
 
 # obj = Registeration()
-#
 # print(obj.Enter_D_O_B())

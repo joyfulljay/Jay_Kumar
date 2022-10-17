@@ -35,5 +35,5 @@ def logout(login_timestamp):
     print("{:-^100}".format("logout"))
 
 
-# def exitpage():
-#     print("{:-^100}".format("Thank you for visiting"))
+def exitpage():
+    print("{:-^100}".format("Thank you for visiting"))
