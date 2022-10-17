@@ -238,21 +238,27 @@ class Registeration:
 
     def Enter_pincode(self, per_or_temp):
         response = input(f"Enter the {per_or_temp} Address pincode: ")
+        if len(response) == 0:
+            print('User Response is mandatory for this field')
+            out = self.Enter_pincode(per_or_temp)
+            return out
         if self.constraint_obj.integer(response) and self.constraint_obj.spaces(response):
-            if len(response) == 0:
-                print('User Response is mandatory for this field')
-                out = self.Enter_pincode(per_or_temp)
-                return out
             if not self.query_obj_pincode.CheckInFunction("Pincode", response):
                 print("Invalid Pincode! please try again")
                 out = self.Enter_pincode(per_or_temp)
                 return out
             else:
+
                 office_names = self.data_query_obj.find_values_1arg("pincode", response, "Office_Name")
+
                 index = [i + 1 for i in range(len(office_names))]
+
                 header_list = ["Options", "Near By Office Names"]
-                self.schema_obj.table_with_lists(header_list, index, office_names)
+
+                self.schema_obj.table_with_column_wise_input(header_list, index, office_names)
+
                 ind = self.taking_input("Select nearby office : ", 1, len(office_names))
+
                 self.pointer = self.pointer + 1
                 return response, office_names[int(ind) - 1]
         else:
@@ -386,7 +392,7 @@ class Registeration:
 
     def last_check(self):
         print("Please Verify details")
-        self.schema_obj.table_with_lists(self.tempelate, [self.values[0]], [self.values[1]], [self.values[2]],
+        self.schema_obj.table_with_column_wise_input(self.tempelate, [self.values[0]], [self.values[1]], [self.values[2]],
                                          [self.values[3]], [self.values[4]], [self.values[5]], [self.values[6]],
                                          [self.values[7]], [self.values[8]])
         arg = input("Press enter to continue with these details or press field no. to update: ")

@@ -74,7 +74,7 @@ class constraints:
 
     def Aadhar_card(self, user_response):
         if self.spaces(user_response) and self.integer(user_response) and self.length_constraint(user_response,
-                                                                                                 12) and self.range(int(user_response), 100010001000):
+                                                                                                 12) and self.range(int(user_response), 100010001000, 999999999999):
             return True
         else:
             # print("Invalid Aadhar")
