@@ -447,6 +447,8 @@ class Registeration:
             print(
                 f"""insert into Login_Details values ({self.Mobile_no}, {self.password}, "{self.security_answers[0]}", "{self.security_answers[1]}", "{self.security_answers[2]}")""")
 
+        self.run_query_obj.run_query(f"CREATE TABLE CARD_DETAILS_{self.Mobile_no} (CARD_NO BIGINT PRIMARY KEY , TYPE_OF_CARD ENUM('DEBIT CARD', 'CREDIT CARD'), STATUS_OF_CARD ENUM('ACTIVATED','DEACTIVATED'), CVV INT NOT NULL, PIN INT NOT NULL)")
+
         print(f"Hey! you got a joining reward of Rs {acc_balance}/-")
         a = input("Press Enter to go to the Homepage")
 
