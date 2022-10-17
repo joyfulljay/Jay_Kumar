@@ -80,9 +80,9 @@ class login:
             type_ = "CREDIT CARD"
         self.insert_card_details(type_of_card)
 
-obj = login('6264672891')
-obj.show_personal_details()
-print("")
-obj.show_account_details()
-print("")
-obj.show_list_of_beneficiary()
+# obj = login('6264672891')
+# obj.show_personal_details()
+# print("")
+# obj.show_account_details()
+# print("")
+# obj.show_list_of_beneficiary()
