@@ -2,6 +2,8 @@ from Data_Queries import Data_queries
 from Output_Schema import *
 from constraints import *
 from mysqlconnector import mySQLcon
+from Additional_Query_functions import helper_query
+from Register import *
 import time
 import random
 
@@ -12,7 +14,9 @@ class login:
     # return
 
     def __init__(self, user_name):
+        self.update_reg = Registeration()
         self.username = user_name
+        self.checkin = helper_query("BANKING", "Registeration")
         self.query_pd = Data_queries(f"personal_details_{user_name}", "BANKING")
         self.query_ad = Data_queries(f"account_details_{user_name}", "BANKING")
         self.query_bd = Data_queries(f"Benifeciary_{user_name}", "BANKING")
@@ -40,17 +44,16 @@ class login:
         ben_details = self.query_bd.find_values_1arg('1', '1', "*")
         template = ["Benificiary Name", "Benificiary Account No"]
         self.view_schema.table_with_row_wise_input(template, ben_details)
+        temp_input = input("Press Enter To Go back to Home")
 
     def show_card_details(self):
-        card_details = self.query_bd.find_values_1arg('1', '1', "*")
-        print(card_details)
+        card_details = self.query_cd.find_values_1arg('1', '1', "*")
         extract_details = []
         for j in card_details:
             extract_row = []
             for i in range(len(j) - 1):
                 extract_row.append(j[i])
             extract_details.append(extract_row)
-        print(extract_details)
         template = ["Card Number", "Type of Card", "Status of card", "CVV", "Card Balance"]
         self.view_schema.table_with_row_wise_input(template, extract_details)
         temp_input = input("Press Enter To Go back to Home")
@@ -83,6 +86,46 @@ class login:
             type_ = "CREDIT CARD"
         self.insert_card_details(type_of_card)
 
+    def add_beneficiary(self):
+        print("Note:- There are only internal transaction service available currently. We can add only our bank users")
+        self.acc_no = self.taking_input("Enter your Account no. of recipient: ", 10, 9999999999)
+        if not self.checkin.CheckInFunction("Account_no", self.acc_no):
+            print("This Account is not belong to our bank, Try with appropriate one ")
+            self.add_beneficiary()
+        else:
+            name = self.query_reg.find_values_1arg("Account_no", self.acc_no, "First_name")
+            print("Beneficiary Added!")
+            self.view_schema.table_with_row_wise_input(["Name", "Account Number"], [[name], [self.acc_no]])
+            inp = input("Press Enter to Continue or other key to edit")
+            if len(inp)==0:
+                self.sqlCon.run_query(f"""insert into Benificiary_{self.username} values ("{name}",{self.acc_no}) """)
+                print("Benificiary added to your profile!")
+                i = input("Press Enter to go back to homepage")
+            else:
+                self.add_beneficiary()
+
+    def edit_personal_details(self):
+        print("1.) Name\n2.) Date of Birth \n3.) Permanent Address\n4.) Temporary Address \n5.) Email ")
+        val = self.taking_input("Select field to edit: ", 1, 6)
+        if val == 1:
+            first_name_new = self.update_reg.First_name()
+            last_name_new = self.update_reg.Last_name()
+            name = first_name_new[:-1:] + " " + last_name_new[1::]
+            self.query_reg.update_value("Mobile_no", self.username, "First_name", first_name_new)
+            self.query_reg.update_value("Mobile_no", self.username, "Last_name", last_name_new)
+            self.query_pd.update_value("Mobile_no", self.username, "Fullname", name)
+        elif val ==2:
+            D_O_B =
+
+
+
+
+
+
+
+
+#Fullname, D_O_B, Mobile_no, Email, Office_name, District, State
+#Account_no, First_name, Last_name, D_O_B, Permanent_address_pincode, Current_address_pincode, Aadhar_card, Mobile_no, Email, Pan_card, Account_created_Timestamp, Account_status
 
 obj = login('6264242775')
 obj.show_personal_details()

@@ -20,3 +20,7 @@ class Output_schema:
 
     def table_with_tupple_list(self, headerlist, data):
         print(tabulate(data, headerlist))
+
+#
+# obj = Output_schema()
+# obj.table_with_row_wise_input(["one", "two", "three", "four"], [[1, 2, 3, 4], [5, 6, 7, 8]])

@@ -5,6 +5,7 @@ class Data_queries:
     def __init__(self, table_name, database):
         self.table_name = table_name
         self.database = database
+        self.sqlcon = mySQLcon("BANKING")
 
     def column(self, column_name):
         con = mySQLcon(self.database)
@@ -14,8 +15,16 @@ class Data_queries:
 
     def find_non_string_values_1arg(self, column_name, value, column_req):
         con = mySQLcon(self.database)
-        column_values = con.dql_query(f"select distinct({column_req}) from {self.table_name} where {column_name} = {value}")
+        column_values = con.dql_query(
+            f"select distinct({column_req}) from {self.table_name} where {column_name} = {value}")
         column_values_in_list = [x[0] for x in column_values]
+        return column_values_in_list
+
+    def getting_whole_table(self):
+        con = mySQLcon(self.database)
+        column_values = con.dql_query(
+            f"""(select distinct* from {self.table_name})""")
+        column_values_in_list = [list(x) for x in column_values]
         return column_values_in_list
 
     def find_values_1arg(self, column_name, value, column_req):
@@ -53,7 +62,8 @@ class Data_queries:
         column_values_in_list = [x for x in column_values[0]]
         return column_values_in_list
 
-    def find_string_and_nonStringValues_2arg(self, string_column_name, value1, non_string_column_name, value2, column_req):
+    def find_string_and_nonStringValues_2arg(self, string_column_name, value1, non_string_column_name, value2,
+                                             column_req):
         con = mySQLcon(self.database)
         if column_req == "*":
             column_values = con.dql_query(
@@ -65,3 +75,6 @@ class Data_queries:
 
         column_values_in_list = [x for x in column_values[0]]
         return column_values_in_list
+
+    def update_value(self, column_name, value, update_column_name, new_value):
+        self.sqlcon.run_query(f"""UPDATE {self.table_name} set {update_column_name} = "{new_value}" where {column_name} = "{value}" """)

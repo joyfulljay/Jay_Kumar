@@ -2,7 +2,6 @@ import time
 
 from constraints import *
 from Additional_Query_functions import *
-from login import *
 from Data_Queries import *
 from Output_Schema import *
 from mysqlconnector import *
@@ -34,15 +33,10 @@ class Registeration:
         elif self.constraint_obj.Mobile_no(response):
 
             if self.query_obj.CheckInFunction("Mobile_no", response):
-                print("Aap is no. se pehele se hi registered ho login karo ho jayega....")
-                user_input = input("Press ENTER to go on login page to retry with another mobile no. press any: ")
-                if bool(user_input):
-                    out = self.Enter_mobile_no()
-                    return out
-                else:
-                    login()
-                    out = self.Enter_mobile_no()
-                    return out
+                print("Already Registered with this Mobile no. Try different or login with the same")
+                user_input = input("Press ENTER to retry")
+                out = self.Enter_mobile_no()
+                return out
             elif self.t > 3:
                 print("{: ^100}".format("\U0001F60C \U0001F60C \U0001F60C "))
                 print("{: ^100}".format("Finally! you did it"))
