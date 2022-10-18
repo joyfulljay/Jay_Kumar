@@ -22,6 +22,7 @@ class login:
         self.query_bd = Data_queries(f"Benifeciary_{user_name}", "BANKING")
         self.query_cd = Data_queries(f"CARD_DETAILS_{user_name}", "BANKING")
         self.query_reg = Data_queries("Registeration", " BANKING")
+        self.query_Pd = Data_queries("PincodeDB", " BANKING")
         self.sqlCon = mySQLcon("BANKING")
         self.view_schema = Output_schema()
         self.constraint_obj = constraints()
@@ -97,7 +98,7 @@ class login:
             print("Beneficiary Added!")
             self.view_schema.table_with_row_wise_input(["Name", "Account Number"], [[name], [self.acc_no]])
             inp = input("Press Enter to Continue or other key to edit")
-            if len(inp)==0:
+            if len(inp) == 0:
                 self.sqlCon.run_query(f"""insert into Benificiary_{self.username} values ("{name}",{self.acc_no}) """)
                 print("Benificiary added to your profile!")
                 i = input("Press Enter to go back to homepage")
@@ -106,7 +107,7 @@ class login:
 
     def edit_personal_details(self):
         print("1.) Name\n2.) Date of Birth \n3.) Permanent Address\n4.) Temporary Address \n5.) Email ")
-        val = self.taking_input("Select field to edit: ", 1, 6)
+        val = self.taking_input("Select field to edit: ", 1, 5)
         if val == 1:
             first_name_new = self.update_reg.First_name()
             last_name_new = self.update_reg.Last_name()
@@ -114,18 +115,41 @@ class login:
             self.query_reg.update_value("Mobile_no", self.username, "First_name", first_name_new)
             self.query_reg.update_value("Mobile_no", self.username, "Last_name", last_name_new)
             self.query_pd.update_value("Mobile_no", self.username, "Fullname", name)
-        elif val ==2:
-            D_O_B =
+            self.show_personal_details()
+        elif val == 2:
+            D_O_B = self.update_reg.D_O_B()
+            D_O_B = D_O_B[1:-1:]
+            self.query_reg.update_value("Mobile_no", self.username, "D_O_B", D_O_B)
+            self.query_pd.update_value("Mobile_no", self.username, "D_O_B", D_O_B)
+            self.show_personal_details()
+        elif val == 3:
+            per_pin_code, per_office_name = self.update_reg.Enter_pincode("permanent")
+            permanent_address = self.query_Pd.find_values_2arg("pincode", per_pin_code, "Office_name", per_office_name,
+                                                               "*")
+            District = permanent_address[7]
+            State = permanent_address[8]
+            self.query_reg.update_value("Mobile_no", self.username, "Permanent_address_pincode", per_pin_code)
+            self.query_pd.update_value("Mobile_no", self.username, "Office_name", per_office_name)
+            self.query_pd.update_value("Mobile_no", self.username, "District", District)
+            self.query_pd.update_value("Mobile_no", self.username, "State", State)
+            self.show_personal_details()
+        elif val == 4:
+            per_pin_code, per_office_name = self.update_reg.Enter_pincode("Temporary")
+            self.query_reg.update_value("Mobile_no", self.username, "Current_address_pincode", per_pin_code)
+            self.show_personal_details()
+        elif val == 5:
+            Email = self.update_reg.Enter_Email()
+            self.query_reg.update_value("Mobile_no", self.username, "Email", Email)
+            self.query_pd.update_value("Mobile_no", self.username, "Email", Email)
+            self.show_personal_details()
 
 
 
 
 
 
-
-
-#Fullname, D_O_B, Mobile_no, Email, Office_name, District, State
-#Account_no, First_name, Last_name, D_O_B, Permanent_address_pincode, Current_address_pincode, Aadhar_card, Mobile_no, Email, Pan_card, Account_created_Timestamp, Account_status
+# Fullname, D_O_B, Mobile_no, Email, Office_name, District, State
+# Account_no, First_name, Last_name, D_O_B, Permanent_address_pincode, Current_address_pincode, Aadhar_card, Mobile_no, Email, Pan_card, Account_created_Timestamp, Account_status
 
 obj = login('6264242775')
 obj.show_personal_details()
