@@ -25,7 +25,7 @@ class Registeration:
         self.t = 0
 
     def Enter_mobile_no(self):
-        print("Step 1")
+
         response = input("Enter Valid Mobile no. : +91 ")
         if not self.mandatory_obj.is_mandatory(response, True):
             out = self.Enter_mobile_no()
@@ -58,7 +58,7 @@ class Registeration:
             self.Enter_mobile_no()
 
     def Enter_Aadhar_no(self):
-        print("Step 2")
+
         response = input("Please enter the 12 digits valid Aadhar no: ")
         if not self.mandatory_obj.is_mandatory(response, True):
             self.Enter_Aadhar_no()
@@ -92,7 +92,7 @@ class Registeration:
                 return out
 
     def Enter_Your_first_name(self):
-        print("Step 3")
+
         response = input("Please Enter your First Name without spaces: ")
         if not self.mandatory_obj.is_mandatory(response, True):
             out = self.Enter_Your_first_name()
@@ -109,7 +109,7 @@ class Registeration:
             return out
 
     def Enter_Your_Last_name(self):
-        print("Step 4")
+
         response = input("Please Enter your Last Name without spaces: ")
         if not self.mandatory_obj.is_mandatory(response, True):
             out = self.Enter_Your_Last_name()
@@ -137,7 +137,7 @@ class Registeration:
             return out1
 
     def Enter_D_O_B(self):
-        print("Step 5")
+
         day = self.taking_input("Enter the day of birth 'dd' : ", 2, 31)
         month = self.taking_input("Enter the month of birth 'mm' : ", 2, 12)
         year = self.taking_input("Enter the year of birth 'yyyy' : ", 4, 2022)
@@ -160,7 +160,7 @@ class Registeration:
             return out
 
     def Enter_Email(self):
-        print("Step 6")
+
         response = input("Please Enter a valid Email address: ")
         if len(response) == 0:
             print('User Response is mandatory for this field')
@@ -314,46 +314,57 @@ class Registeration:
                 print("Go on....")
 
         if self.pointer == 0:
+            print("Step 1")
             self.Mobile_no = self.Enter_mobile_no()  # done
             out = self.register_user()
             return out
         elif self.pointer == 1:
+            print("Step 2")
             self.Aadhar_no = self.Enter_Aadhar_no()
             out = self.register_user()
             return out
         elif self.pointer == 2:
+            print("Step 3")
             self.First_name = self.Enter_Your_first_name()
             out = self.register_user()
             return out
         elif self.pointer == 3:
+            print("Step 4")
             self.Last_name = self.Enter_Your_Last_name()
             out = self.register_user()
             return out
         elif self.pointer == 4:
+            print("Step 5")
             self.D_O_B = self.Enter_D_O_B()
             out = self.register_user()
             return out
         elif self.pointer == 5:
+            print("Step 6")
             self.Email = self.Enter_Email()
             out = self.register_user()
             return out
         elif self.pointer == 6:
+            print("Step 7")
             self.Pan_card = self.Enter_pan_card()
             out = self.register_user()
             return out
         elif self.pointer == 7:
+            print("Step 8")
             self.password = self.Enter_password()
             out = self.register_user()
             return out
         elif self.pointer == 8:
+            print("Step 9")
             self.security_answers = self.Enter_Security_questions()
             out = self.register_user()
             return out
         elif self.pointer == 9:
+            print("Step 10")
             self.per_pincode, self.per_office_name = self.Enter_pincode("Permanent")
             out = self.register_user()
             return out
         elif self.pointer == 10:
+            print("Step 11")
             self.temp_pincode, self.temp_office_name = self.Enter_pincode("Temporary")
             out = self.register_user()
             return out

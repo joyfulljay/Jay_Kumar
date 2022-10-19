@@ -16,6 +16,7 @@ class login:
     # return
 
     def __init__(self, user_name):
+        self.lo = False
         self.login_timestamp = dt.datetime.now()
         self._is_mandatory = mandatory()
         self.wrong_pin_count = 0
@@ -165,23 +166,23 @@ class login:
         val = self.taking_input("Select field to edit: ", 5)
         val = int(val)
         if val == 1:
-            print("1")
+            # print("1")
             first_name_new = self.update_reg.Enter_Your_first_name()
             first_name_new = first_name_new[1:-1:]
-            print("2")
+            # print("2")
             last_name_new = self.update_reg.Enter_Your_Last_name()
             last_name_new = last_name_new[1:-1:]
-            print("3")
+            # print("3")
             name = first_name_new + " " + last_name_new
-            print("4")
+            # print("4")
             self.query_reg.update_value("Mobile_no", self.username, "First_name", first_name_new)
-            print("5")
+            # print("5")
             self.query_reg.update_value("Mobile_no", self.username, "Last_name", last_name_new)
-            print("6")
+            # print("6")
             self.query_pd.update_value("Mobile_no", self.username, "Fullname", name)
-            print("7")
+            # print("7")
             self.show_personal_details()
-            print("8")
+            # print("8")
         elif val == 2:
             D_O_B = self.update_reg.Enter_D_O_B()
             D_O_B = D_O_B[1:-1:]
@@ -227,6 +228,8 @@ class login:
         # print(recievers_acc_no, type(recievers_acc_no))
         ru = self.query_reg.find_values_1arg("Account_no", recievers_acc_no, "Mobile_no")
         # print(ru)
+        self.show_account_details()
+        print("")
         self.transfer_ammount = self.taking_input("Enter Amount to transfer: ", balance)
         # if self.constraint_obj.integer(self.transfer_ammount):
         #     if int(self.transfer_ammount) > balance:
@@ -241,7 +244,12 @@ class login:
         rb = query_ad_u.find_values_1arg("1", "1", "account_balance")
         # print(rb)
         query_ad_u.update_value("Account_no", recievers_acc_no, "account_balance", (rb[0] + int(self.transfer_ammount)))
-        print("Transaction Successfull")
+        print("Transaction Successfull!")
+        print("------------------------------------------------------------")
+        temp  = input("Press enter to show account info: ")
+        print("------------------------------------------------------------")
+        self.show_account_details()
+        print("------------------------------------------------------------")
 
         # else:
         #     print("Invalid Argument try again")
@@ -286,39 +294,52 @@ class login:
             print("Thank you for your valuable feedback. We will look into the issue and serve you better next time.")
 
     def run_login(self):
-        print("0.) Personal Details")
-        print("1.) Account Details")
-        print("2.) Edit Personal Details")
-        print("3.) Beneficiary Details")
-        print("4.) Add Beneficiary")
-        print("5.) CARD Details")
-        print("6.) add a new card")
-        print("7.) Change MPIN")
-        print("8.) Money Transfer")
-        print("9.) Logout")
+        print("1.) Personal Details")
+        print("2.) Account Details")
+        print("3.) Edit Personal Details")
+        print("4.) Beneficiary Details")
+        print("5.) Add Beneficiary")
+        print("6.) CARD Details")
+        print("7.) add a new card")
+        print("8.) Change MPIN")
+        print("9.) Money Transfer")
+        print("10.) Logout")
 
-        user_input = self.taking_input("Please Select the appropriate field: ", 1, 9)
+        user_input = self.taking_input("Please Select the appropriate field: ", 10)
+        user_input = int(user_input)
 
-        if user_input == 0:
-            self.show_personal_details()
         if user_input == 1:
-            self.show_account_details()
+            self.show_personal_details()
+            temp = input("Press Enter to go back to Homepage ")
         if user_input == 2:
-            self.edit_personal_details()
+            self.show_account_details()
+            temp = input("Press Enter to go back to Homepage ")
         if user_input == 3:
-            self.show_list_of_beneficiary()
+            self.edit_personal_details()
+            temp = input("Press Enter to go back to Homepage ")
         if user_input == 4:
-            self.add_beneficiary()
+            self.show_list_of_beneficiary()
+            temp = input("Press Enter to go back to Homepage ")
         if user_input == 5:
-            self.show_card_details()
+            self.add_beneficiary()
+            temp = input("Press Enter to go back to Homepage ")
         if user_input == 6:
-            self.add_new_card()
+            self.show_card_details()
+            temp = input("Press Enter to go back to Homepage ")
         if user_input == 7:
-            self.change_MPIN()
+            self.add_new_card()
+            temp = input("Press Enter to go back to Homepage ")
         if user_input == 8:
-            self.transfer_funds()
+            self.change_MPIN()
+            temp = input("Press Enter to go back to Homepage ")
         if user_input == 9:
+            self.transfer_funds()
+            temp = input("Press Enter to go back to Homepage ")
+        if user_input == 10:
+            self.lo = True
             self.logout()
+        if not self.lo:
+            self.run_login()
 
 
 # transaction_id, Senders_Account_no, Receivers_account_no, transaction_time_stamp, Transaction_status,
@@ -332,13 +353,13 @@ class login:
 #   SAME BENEFICIARY BUG TO BE FIXED.
 
 
-obj = login('9876543211')
-# obj.show_personal_details()
-# print("")
-# obj.show_account_details()
-# print("")
-# obj.show_list_of_beneficiary()
-# print("")
-# obj.show_card_details()
-obj.show_account_details()
-# 6526248324
+# obj = login('9876543211')
+# # obj.show_personal_details()
+# # print("")
+# # obj.show_account_details()
+# # print("")
+# # obj.show_list_of_beneficiary()
+# # print("")
+# # obj.show_card_details()
+# obj.run_login()
+# # 6526248324

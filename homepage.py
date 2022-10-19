@@ -1,12 +1,16 @@
+from Additional_Query_functions import *
 from Register import Registeration
-from login import *
+from login import login
 from exit import exitpage
 
 
 def run_process(option):
+    obj = helper_query("BANKING", "")
     try:
         if int(option) == 1:
-            obj = login()
+
+            obj = login("1235")
+            print("1")
             obj.run_login()
             Homepage()
         elif int(option) == 2:
@@ -21,7 +25,7 @@ def run_process(option):
 
             Homepage()
 
-    except:
+    except Exception as e:
         exitpage()
 
 

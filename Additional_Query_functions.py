@@ -23,6 +23,5 @@ class helper_query:
 
         return t
 
-
 # obj = helper_query("BANKING", "Login_Details")
 # print(obj.password_check("Login_Username", 626424277, "Password", "HelloJay@123"))
