@@ -165,7 +165,8 @@ class constraints:
         if age >= 18:
             return True
         else:
-            print(f"You have to wait {18 - age} years to create account.(Age should be greater than 18 years)")
+            print(f"You are {18 - age} year younger than the age required for being eligible. (Age should be greater "
+                  f"than 18 years)")
             return False
 
     def input_constraint(self, user_response, leng, Range):

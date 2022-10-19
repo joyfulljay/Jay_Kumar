@@ -71,6 +71,17 @@ class login:
         else:
             return out1
 
+    def taking_inputl(self, parameter, leng, Range):
+        out1 = input(parameter)
+        if not self._is_mandatory.is_mandatory(out1, True):
+            out = self.taking_inputl(parameter, leng, Range)
+            return out
+        if not self.constraint_obj.input_constraint(out1, leng, Range):
+            out = self.taking_inputl(parameter, leng, Range)
+            return out
+        else:
+            return out1
+
     def insert_card_details(self, type_):
         card_no = int("202201" + str(int(time.time())))
         cvv = int(1000 * (random.random() + 0.1))
@@ -91,24 +102,33 @@ class login:
         card_no, cvv = self.insert_card_details(type_of_card)
         print(f"{type} generated with with card number ({card_no}) and cvv ({cvv})")
 
+
+
     def change_MPIN(self):
+        self.show_card_details()
+        card_details = self.query_cd.find_values_1arg("1", "1", "*")
+        range = len(card_details)
+        S_no = self.taking_input("Enter the serial no of card you want to change MPIN : ", range)
+        self.change_MPINhf(S_no)
+
+    def change_MPINhf(self, S_no):
         if self.wrong_pin_count == 3:
-            "You exhausted your all attempt please re-login and then try"
+            print("You exhausted your all attempt please re-login and then try")
             return
         else:
-            self.show_card_details()
-            card_details = self.query_cd.find_values_1arg("1", "1", "*")
-            range = len(card_details)
-            S_no = self.taking_input("Enter the serial no of card you want to change MPIN : ", 1, range)
-            verify = self.taking_input("Enter current MPIN: ", 4, 9999)
+            verify = self.taking_inputl("Enter current MPIN: ", 4, 9999)
             checkmpin = helper_query("BANKING", f"CARD_DETAILS_{self.username}")
             if not checkmpin.password_check("S_No", S_no, "PIN", verify):
                 self.wrong_pin_count += 1
                 print(f"Incorrect pin, Only {3 - self.wrong_pin_count} trials left")
-                self.change_MPIN()
+                temp = self.taking_input("1.) Back to homepage\n2.) Retry Pin\nSelect your desired field: ", 2)
+                if int(temp) == 2:
+                    self.change_MPINhf(S_no)
+                else:
+                    return
             else:
                 self.wrong_pin_count = 0
-                new_pin = self.taking_input("Enter new MPIN: ", 4, 9999)
+                new_pin = self.taking_inputl("Enter new MPIN: ", 4, 9999)
                 self.query_cd.update_value("S_no", S_no, "PIN", new_pin)
                 print("Pin Changed!\n")
 
@@ -163,7 +183,7 @@ class login:
             self.show_personal_details()
             print("8")
         elif val == 2:
-            D_O_B = self.update_reg.D_O_B()
+            D_O_B = self.update_reg.Enter_D_O_B()
             D_O_B = D_O_B[1:-1:]
             self.query_reg.update_value("Mobile_no", self.username, "D_O_B", D_O_B)
             self.query_pd.update_value("Mobile_no", self.username, "D_O_B", D_O_B)
@@ -185,6 +205,7 @@ class login:
             self.show_personal_details()
         elif val == 5:
             Email = self.update_reg.Enter_Email()
+            Email = Email[1:-1:]
             self.query_reg.update_value("Mobile_no", self.username, "Email", Email)
             self.query_pd.update_value("Mobile_no", self.username, "Email", Email)
             self.show_personal_details()
@@ -192,51 +213,63 @@ class login:
 
     def transfer_funds(self):
         extract_balance = self.query_ad.find_values_1arg("1", "1", "account_balance")
+        # print(extract_balance)
         senders_account_no = self.query_ad.find_values_1arg("1", "1", "Account_no")
+        # print(senders_account_no)
         balance = int(extract_balance[0])
+        # print(balance)
         self.show_list_of_beneficiary()
         ben_details = self.query_bd.find_values_1arg("1", "1", "*")
+        # print(ben_details)
         range = len(ben_details)
         to_send = self.taking_input("Please Select Beneficiary to fund transfer: ", range)
-        recievers_acc_no = ben_details[to_send - 1][1]
+        recievers_acc_no = ben_details[int(to_send) - 1][2]
+        # print(recievers_acc_no, type(recievers_acc_no))
         ru = self.query_reg.find_values_1arg("Account_no", recievers_acc_no, "Mobile_no")
-        self.transfer_ammount = input("Enter Amount to transfer: ")
-        if len(self.transfer_ammount) == 0:
-            print("This field is Mandatory")
-            self.transfer_funds()
-        if self.constraint_obj.integer(self.transfer_ammount):
-            if int(self.transfer_ammount) > balance:
-                print("Insufficient Funds")
-                return
-            else:
-                self.sqlCon.run_query(
-                    f"""insert into global_transactions (Senders_Account_no, Recievers_account_no, Ammount) values ({senders_account_no}, {recievers_acc_no}, {self.transfer_ammount} )""")
-                self.query_ad.update_value("Account_no", senders_account_no, "account_balance",
-                                           (balance - self.transfer_ammount))
-                query_ad_u = Data_queries(f"account_details_{ru}", "BANKING")
-                rb = query_ad_u.find_values_1arg("1", "1", "account_balance")
-                query_ad_u.update_value("Account_no", recievers_acc_no, "account_balance", (rb + self.transfer_ammount))
-                print("Transaction Successfull")
+        # print(ru)
+        self.transfer_ammount = self.taking_input("Enter Amount to transfer: ", balance)
+        # if self.constraint_obj.integer(self.transfer_ammount):
+        #     if int(self.transfer_ammount) > balance:
+        #         print("Insufficient Funds")
+        #         return
+        #     else:
+        self.sqlCon.run_query(
+            f"""insert into global_transactions (Senders_Account_no, Recievers_account_no, Ammount) values ({senders_account_no[0]}, {recievers_acc_no}, {self.transfer_ammount} )""")
+        self.query_ad.update_value("Account_no", senders_account_no[0], "account_balance",
+                                   (balance - int(self.transfer_ammount)))
+        query_ad_u = Data_queries(f"account_details_{ru[0]}", "BANKING")
+        rb = query_ad_u.find_values_1arg("1", "1", "account_balance")
+        # print(rb)
+        query_ad_u.update_value("Account_no", recievers_acc_no, "account_balance", (rb[0] + int(self.transfer_ammount)))
+        print("Transaction Successfull")
 
-        else:
-            print("Invalid Argument try again")
-            self.transfer_ammount()
-            return
+        # else:
+        #     print("Invalid Argument try again")
+        #     self.transfer_ammount()
+        #     return
 
     def logout(self):
-        self.rating = self.taking_input("Hey! How did we serve. Please Rate us on 1 to 5 :", 1, 5)
+        self.rating = self.taking_input("Hey! How did we serve. Please Rate us on 1 to 5 : ", 5)
 
-        comment = input("Additional Comments: ")
+        comment = input("Additional Comments! or press enter to skip: ")
         if len(comment) == 0:
             comment = "No Valuable Comments"
+        else:
+            comment1 = comment.replace(" ", "")
+            if len(comment1) == 0:
+                comment = "No Valuable Comments"
+
         self.feedback(int(self.rating), comment, self.login_timestamp)
         print("{:-^100}".format("logout"))
 
     def feedback(self, rating, comment, login_timestamp):
         logout_time = dt.datetime.now()
-        con = mySQLcon("BANKING")
-        con.run_query(
-            f"""insert into feedback (user_id, Login_timestamp, Logout_timestamp, Rating, Additional_Comments) values({self.username}"{login_timestamp}", "{logout_time}", {rating},"{comment}")""")
+        # print(logout_time)
+        # print(login_timestamp)
+        # print(rating)
+        # print(comment)
+        self.sqlCon.run_query(
+            f"""insert into feedback (user_id, Login_timestamp, Logout_timestamp, Rating, Additional_Comments) values({self.username},'{login_timestamp}', '{logout_time}', {rating},"{comment}")""")
         if rating == 5:
             print("Thank you for your valuable feedback")
         elif rating == 4:
@@ -245,7 +278,8 @@ class login:
             print("Thank you for your valuable feedback. We would serve you better next time.")
         elif rating == 2:
             print(
-                "Thank you for your valuable feedback. Our service team is constantly working for betterment of user experience.")
+                "Thank you for your valuable feedback. Our service team is constantly working for betterment of user "
+                "experience.")
         elif rating == 1:
             print("Thank you for your valuable feedback. We will look into the issue and serve you better next time.")
         else:
@@ -287,13 +321,15 @@ class login:
             self.logout()
 
 
-# transaction_id, Senders_Account_no, Recievers_account_no, transaction_time_stamp, Transaction_status, Ammount
-# Fullname, D_O_B, Mobile_no, Email, Office_name, District, State
-# Account_no, First_name, Last_name, D_O_B, Permanent_address_pincode, Current_address_pincode, Aadhar_card, Mobile_no, Email, Pan_card, Account_created_Timestamp, Account_status
+# transaction_id, Senders_Account_no, Receivers_account_no, transaction_time_stamp, Transaction_status,
+# Amount Fullname, D_O_B, Mobile_no, Email, Office_name, District, State Account_no, First_name, Last_name, D_O_B,
+# Permanent_address_pincode, Current_address_pincode, Aadhar_card, Mobile_no, Email, Pan_card,
+# Account_created_Timestamp, Account_status
 
 
 #   OWN BANK ACCOUNT BUG TO BE FIXED. FIXED
-#   STEP BUG IS TO BE FIXED IN REISTRATION.
+#   STEP BUG IS TO BE FIXED IN REGISTRATION.
+#   SAME BENEFICIARY BUG TO BE FIXED.
 
 
 obj = login('9876543211')
@@ -304,5 +340,5 @@ obj = login('9876543211')
 # obj.show_list_of_beneficiary()
 # print("")
 # obj.show_card_details()
-obj.edit_personal_details()
+obj.show_account_details()
 # 6526248324
