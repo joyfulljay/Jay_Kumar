@@ -118,8 +118,9 @@ class login:
         self.acc_no = self.taking_input("Enter The Account no. of Recipient: ", 9999999999)
 
         if account_no[0] == int(self.acc_no):
-            i = input("You can not add your own account in your own Beneficiary. Press enter to re-enter or press other key to exit")
-            if len(i)==0:
+            i = input(
+                "You can not add your own account in your own Beneficiary. Press enter to re-enter or press other key to exit")
+            if len(i) == 0:
                 self.add_beneficiary()
             else:
                 return
@@ -142,14 +143,25 @@ class login:
     def edit_personal_details(self):
         print("1.) Name\n2.) Date of Birth \n3.) Permanent Address\n4.) Temporary Address \n5.) Email ")
         val = self.taking_input("Select field to edit: ", 5)
+        val = int(val)
         if val == 1:
-            first_name_new = self.update_reg.First_name()
-            last_name_new = self.update_reg.Last_name()
-            name = first_name_new[:-1:] + " " + last_name_new[1::]
+            print("1")
+            first_name_new = self.update_reg.Enter_Your_first_name()
+            first_name_new = first_name_new[1:-1:]
+            print("2")
+            last_name_new = self.update_reg.Enter_Your_Last_name()
+            last_name_new = last_name_new[1:-1:]
+            print("3")
+            name = first_name_new + " " + last_name_new
+            print("4")
             self.query_reg.update_value("Mobile_no", self.username, "First_name", first_name_new)
+            print("5")
             self.query_reg.update_value("Mobile_no", self.username, "Last_name", last_name_new)
+            print("6")
             self.query_pd.update_value("Mobile_no", self.username, "Fullname", name)
+            print("7")
             self.show_personal_details()
+            print("8")
         elif val == 2:
             D_O_B = self.update_reg.D_O_B()
             D_O_B = D_O_B[1:-1:]
@@ -280,7 +292,9 @@ class login:
 # Account_no, First_name, Last_name, D_O_B, Permanent_address_pincode, Current_address_pincode, Aadhar_card, Mobile_no, Email, Pan_card, Account_created_Timestamp, Account_status
 
 
-#   OWN BANK ACCOUNT BUG TO BE FIXED.
+#   OWN BANK ACCOUNT BUG TO BE FIXED. FIXED
+#   STEP BUG IS TO BE FIXED IN REISTRATION.
+
 
 obj = login('9876543211')
 # obj.show_personal_details()
@@ -290,5 +304,5 @@ obj = login('9876543211')
 # obj.show_list_of_beneficiary()
 # print("")
 # obj.show_card_details()
-obj.add_beneficiary()
-6526248324
+obj.edit_personal_details()
+# 6526248324
