@@ -4,6 +4,7 @@ from constraints import *
 from mysqlconnector import mySQLcon
 from Additional_Query_functions import helper_query
 from Additional_functions import mandatory
+import datetime as dt
 from Register import *
 import time
 import random
@@ -15,6 +16,7 @@ class login:
     # return
 
     def __init__(self, user_name):
+        self.login_timestamp = dt.datetime.now()
         self._is_mandatory = mandatory()
         self.wrong_pin_count = 0
         self.update_reg = Registeration()
@@ -206,16 +208,78 @@ class login:
             self.transfer_ammount()
             return
 
+    def logout(self):
+        self.rating = self.taking_input("Hey! How did we serve. Please Rate us on 1 to 5 :", 1, 5)
+
+        comment = input("Additional Comments: ")
+        if len(comment) == 0:
+            comment = "No Valuable Comments"
+        self.feedback(int(self.rating), comment, self.login_timestamp)
+        print("{:-^100}".format("logout"))
+
+    def feedback(self, rating, comment, login_timestamp):
+        logout_time = dt.datetime.now()
+        con = mySQLcon("BANKING")
+        con.run_query(
+            f"""insert into feedback (user_id, Login_timestamp, Logout_timestamp, Rating, Additional_Comments) values({self.username}"{login_timestamp}", "{logout_time}", {rating},"{comment}")""")
+        if rating == 5:
+            print("Thank you for your valuable feedback")
+        elif rating == 4:
+            print("Thank you for your valuable feedback. We would serve you better next time. ")
+        elif rating == 3:
+            print("Thank you for your valuable feedback. We would serve you better next time.")
+        elif rating == 2:
+            print(
+                "Thank you for your valuable feedback. Our service team is constantly working for betterment of user experience.")
+        elif rating == 1:
+            print("Thank you for your valuable feedback. We will look into the issue and serve you better next time.")
+        else:
+            print("Thank you for your valuable feedback. We will look into the issue and serve you better next time.")
+
+    def run_login(self):
+        print("0.) Personal Details")
+        print("1.) Account Details")
+        print("2.) Edit Personal Details")
+        print("3.) Beneficiary Details")
+        print("4.) Add Beneficiary")
+        print("5.) CARD Details")
+        print("6.) add a new card")
+        print("7.) Change MPIN")
+        print("8.) Money Transfer")
+        print("9.) Logout")
+
+        user_input = self.taking_input("Please Select the appropriate field: ", 1, 9)
+
+        if user_input == 0:
+            self.show_personal_details()
+        if user_input == 1:
+            self.show_account_details()
+        if user_input == 2:
+            self.edit_personal_details()
+        if user_input == 3:
+            self.show_list_of_beneficiary()
+        if user_input == 4:
+            self.add_beneficiary()
+        if user_input == 5:
+            self.show_card_details()
+        if user_input == 6:
+            self.add_new_card()
+        if user_input == 7:
+            self.change_MPIN()
+        if user_input == 8:
+            self.transfer_funds()
+        if user_input == 9:
+            self.logout()
 
 # transaction_id, Senders_Account_no, Recievers_account_no, transaction_time_stamp, Transaction_status, Ammount
 # Fullname, D_O_B, Mobile_no, Email, Office_name, District, State
 # Account_no, First_name, Last_name, D_O_B, Permanent_address_pincode, Current_address_pincode, Aadhar_card, Mobile_no, Email, Pan_card, Account_created_Timestamp, Account_status
 
-obj = login('6264242775')
-obj.show_personal_details()
-print("")
-obj.show_account_details()
-print("")
-obj.show_list_of_beneficiary()
-print("")
-obj.show_card_details()
+# obj = login('6264242775')
+# obj.show_personal_details()
+# print("")
+# obj.show_account_details()
+# print("")
+# obj.show_list_of_beneficiary()
+# print("")
+# obj.show_card_details()
