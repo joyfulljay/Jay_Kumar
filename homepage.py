@@ -6,7 +6,8 @@ from exit import exitpage
 def run_process(option):
     try:
         if int(option) == 1:
-            login()
+            obj = login()
+            obj.run_login()
             Homepage()
         elif int(option) == 2:
             print("{:-^100}".format("Welcome to our Leap bank, Press enter to Continue with Registeration"))
