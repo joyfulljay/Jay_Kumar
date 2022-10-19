@@ -14,5 +14,15 @@ class helper_query:
         else:
             return False
 
-    def pass_word_check(self, to_map_column, to_map_on_value, map_with_column, value_to_be_checked):
-        print("will complete later")
+    def password_check(self, to_map_column, to_map_on_value, map_with_column, value_to_be_checked):
+        t = True
+        try:
+            val = self.obj.find_values_2arg(to_map_column, to_map_on_value, map_with_column, value_to_be_checked, "*")
+        except:
+            t = False
+
+        return t
+
+
+# obj = helper_query("BANKING", "Login_Details")
+# print(obj.password_check("Login_Username", 626424277, "Password", "HelloJay@123"))

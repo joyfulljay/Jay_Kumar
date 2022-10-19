@@ -3,6 +3,7 @@ from Output_Schema import *
 from constraints import *
 from mysqlconnector import mySQLcon
 from Additional_Query_functions import helper_query
+from Additional_functions import mandatory
 from Register import *
 import time
 import random
@@ -14,6 +15,8 @@ class login:
     # return
 
     def __init__(self, user_name):
+        self._is_mandatory = mandatory()
+        self.wrong_pin_count = 0
         self.update_reg = Registeration()
         self.username = user_name
         self.checkin = helper_query("BANKING", "Registeration")
@@ -55,7 +58,7 @@ class login:
             for i in range(len(j) - 1):
                 extract_row.append(j[i])
             extract_details.append(extract_row)
-        template = ["Card Number", "Type of Card", "Status of card", "CVV", "Card Balance"]
+        template = ["Serial no.", "Card Number", "Type of Card", "Status of card", "CVV", "Card Balance"]
         self.view_schema.table_with_row_wise_input(template, extract_details)
         temp_input = input("Press Enter To Go back to Home")
 
@@ -76,6 +79,7 @@ class login:
         pin = self.taking_input("Enter a valid 4 digit pin: ", 4, 9999)
         self.sqlCon.run_query(
             f"INSERT INTO CARD_DETAILS_{self.username} (CARD_NO, TYPE_OF_CARD , CVV , PIN) VALUES ({card_no}, {type_} ,{cvv}, {pin})")
+        return card_no, cvv
 
     def add_new_card(self):
 
@@ -85,7 +89,30 @@ class login:
             type_ = "DEBIT CARD"
         elif type_of_card == 1:
             type_ = "CREDIT CARD"
-        self.insert_card_details(type_of_card)
+        card_no, cvv = self.insert_card_details(type_of_card)
+        print(f"type_ generated with with card number ({card_no}) and cvv ({cvv})")
+        temp_input = input("Press Enter To Go back to Home")
+
+    def change_MPIN(self):
+        if self.wrong_pin_count == 3:
+            "You exhausted your all attempt please re-login and then try"
+            return
+        else:
+            self.show_card_details()
+            card_details = self.query_cd.find_values_1arg("1", "1", "*")
+            range = len(card_details)
+            S_no = self.taking_input("Enter the serial no of card you want to change MPIN : ")
+            verify = self.taking_input("Enter current MPIN: ", 4, 9999)
+            checkmpin = helper_query("BANKING", f"CARD_DETAILS_{self.username}")
+            if not checkmpin.password_check("S_No", S_no, "PIN", verify):
+                self.wrong_pin_count += 1
+                print(f"Incorrect pin, Only {3 - self.wrong_pin_count} trials left")
+            else:
+                self.wrong_pin_count = 0
+                new_pin = self.taking_input("Enter new MPIN: ", 4, 9999)
+                self.query_cd.update_value("S_no", S_no, "PIN", new_pin)
+                print("Pin Changed!\n")
+        temp_input = input("Press Enter To Go back to Home")
 
     def add_beneficiary(self):
         print("Note:- There are only internal transaction service available currently. We can add only our bank users")
@@ -142,12 +169,45 @@ class login:
             self.query_reg.update_value("Mobile_no", self.username, "Email", Email)
             self.query_pd.update_value("Mobile_no", self.username, "Email", Email)
             self.show_personal_details()
+        print("Details_Updated")
+        temp_input = input("Press Enter To Go back to Home")
+
+    def transfer_funds(self):
+        extract_balance = self.query_ad.find_values_1arg("1", "1", "account_balance")
+        senders_account_no = self.query_ad.find_values_1arg("1", "1", "Account_no")
+        balance = int(extract_balance[0])
+        self.show_list_of_beneficiary()
+        ben_details = self.query_bd.find_values_1arg("1", "1", "*")
+        range = len(ben_details)
+        to_send = self.taking_input("Please Select Beneficiary to fund transfer: ", 1, range)
+        recievers_acc_no = ben_details[to_send - 1][1]
+        ru = self.query_reg.find_values_1arg("Account_no", recievers_acc_no, "Mobile_no")
+        transfer_ammount = input("Enter Amount to transfer: ")
+        if len(transfer_ammount) == 0:
+            print("This field is Mandatory")
+            self.transfer_funds()
+        if self.constraint_obj.integer(transfer_ammount):
+            if int(transfer_ammount) > balance:
+                print("Insufficient Funds")
+                return
+            else:
+                self.sqlCon.run_query(
+                    f"""insert into global_transactions (Senders_Account_no, Recievers_account_no, Ammount) values ({senders_account_no}, {recievers_acc_no}, {transfer_ammount} )""")
+                self.query_ad.update_value("Account_no", senders_account_no, "account_balance",
+                                           (balance - transfer_ammount))
+                query_ad_u = Data_queries(f"account_details_{ru}", "BANKING")
+                rb = query_ad_u.find_values_1arg("1", "1", "account_balance")
+                query_ad_u.update_value("Account_no", recievers_acc_no, "account_balance", (rb+transfer_ammount))
+                print("Transaction Successfull")
+                temp_input = input("Press Enter To Go back to Home")
+
+        else:
+            print("Invalid Argument try again")
+            self.transfer_ammount()
+            return
 
 
-
-
-
-
+# transaction_id, Senders_Account_no, Recievers_account_no, transaction_time_stamp, Transaction_status, Ammount
 # Fullname, D_O_B, Mobile_no, Email, Office_name, District, State
 # Account_no, First_name, Last_name, D_O_B, Permanent_address_pincode, Current_address_pincode, Aadhar_card, Mobile_no, Email, Pan_card, Account_created_Timestamp, Account_status
 

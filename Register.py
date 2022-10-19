@@ -422,7 +422,7 @@ class Registeration:
             print("five")
         try:
             self.run_query_obj.run_query(
-                f"create table Benifeciary_{self.Mobile_no} (Benificiary_name varchar(100), Benificiary_Account_no BIGINT)")
+                f"create table Benifeciary_{self.Mobile_no} (S_no INT PRIMARY KEY AUTO_INCREMENT, Benificiary_name varchar(100), Benificiary_Account_no BIGINT)")
         except:
             print("six")
 
@@ -456,7 +456,7 @@ class Registeration:
                 f"""insert into Login_Details values ({self.Mobile_no}, {self.password}, "{self.security_answers[0]}", "{self.security_answers[1]}", "{self.security_answers[2]}")""")
 
         self.run_query_obj.run_query(
-            f"CREATE TABLE CARD_DETAILS_{self.Mobile_no} (S_No int AUTO_INCREAMENT, CARD_NO BIGINT PRIMARY KEY , TYPE_OF_CARD ENUM('DEBIT CARD', 'CREDIT CARD'), STATUS_OF_CARD ENUM('ACTIVATED','DEACTIVATED') DEFAULT 'ACTIVATED', CVV INT NOT NULL,CARD_BALANCE BIGINT NOT NULL DEFAULT 0 ,PIN INT NOT NULL)")
+            f"CREATE TABLE CARD_DETAILS_{self.Mobile_no} (S_No INT AUTO_INCREMENT, CARD_NO BIGINT PRIMARY KEY , TYPE_OF_CARD ENUM('DEBIT CARD', 'CREDIT CARD'), STATUS_OF_CARD ENUM('ACTIVATED','DEACTIVATED') DEFAULT 'ACTIVATED', CVV INT NOT NULL,CARD_BALANCE BIGINT NOT NULL DEFAULT 0 ,PIN INT NOT NULL)")
 
         a = input("Press Enter to registering a Credit Card")
         self.insert_card_details("CREDIT CARD", self.Mobile_no)
