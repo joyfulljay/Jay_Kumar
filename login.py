@@ -22,8 +22,8 @@ class login:
         self.wrong_pin_count = 0
         self.update_reg = Registeration()
         self.username = user_name
-        self.checkin = helper_query("BANKING", f"Benifeciary_{user_name}")
-        self.checkinBenificiary = helper_query("BANKING", "Registeration")
+        self.checkinBenificiary = helper_query("BANKING", f"Benifeciary_{user_name}")
+        self.checkin = helper_query("BANKING", "Registeration")
         self.query_pd = Data_queries(f"personal_details_{user_name}", "BANKING")
         self.query_ad = Data_queries(f"account_details_{user_name}", "BANKING")
         self.query_bd = Data_queries(f"Benifeciary_{user_name}", "BANKING")
@@ -87,7 +87,7 @@ class login:
     def insert_card_details(self, type_):
         card_no = int("202201" + str(int(time.time())))
         cvv = int(1000 * (random.random() + 0.1))
-        pin = self.taking_input("Enter a valid 4 digit pin: ", 4, 9999)
+        pin = self.taking_inputl("Enter a valid 4 digit pin: ", 4, 9999)
         self.sqlCon.run_query(
             f"INSERT INTO CARD_DETAILS_{self.username} (CARD_NO, TYPE_OF_CARD , CVV , PIN) VALUES ({card_no}, {type_} ,{cvv}, {pin})")
         return card_no, cvv
@@ -96,15 +96,13 @@ class login:
         print("Please select a card to add \n")
 
         type_of_card = self.taking_input("1.) Debit Card \n2.) Credit Card \nPlease response with a valid argument "
-                                         "according to your choice: ", 1, 2)
+                                         "according to your choice: ", 2)
         if int(type_of_card) == 1:
             type = "DEBIT CARD"
         elif int(type_of_card) == 2:
             type = "CREDIT CARD"
         card_no, cvv = self.insert_card_details(type_of_card)
         print(f"{type} generated with with card number ({card_no}) and cvv ({cvv})")
-
-
 
     def change_MPIN(self):
         self.show_card_details()
@@ -135,39 +133,46 @@ class login:
                 print("Pin Changed!\n")
 
     def add_beneficiary(self):
+        self.B = True
         account_no = self.query_reg.find_values_1arg("Mobile_no", self.username, "Account_no")
         print("Note:- There are only internal transaction service available currently. We can add only our bank users")
         self.acc_no = self.taking_input("Enter The Account no. of Recipient: ", 9999999999)
-        if self.checkinBenificiary.CheckInFunction("Benificiary_Account_no", self.acc_no):
-            print("Benificiary Already Created with this account no")
-            inp = input("Press Enter to go back to Home or other key to retry: ")
-            if len(inp) == 0:
-                return
-            else:
-                self.add_beneficiary()
+        print(self.acc_no)
+        try:
+            if self.checkinBenificiary.CheckInFunction("Benificiary_Account_no", self.acc_no):
+                print("Benificiary Already Created with this account no")
+                inp = input("Press Enter to go back to Home or other key to retry: ")
+                if len(inp) == 0:
+                    self.B = False
+                    return
+                else:
+                    self.add_beneficiary()
 
-        if account_no[0] == int(self.acc_no):
-            i = input(
-                "You can not add your own account in your own Beneficiary. Press enter to re-enter or press other key to exit")
-            if len(i) == 0:
-                self.add_beneficiary()
-            else:
-                return
+            if account_no[0] == int(self.acc_no) and self.B:
+                i = input(
+                    "You can not add your own account in your own Beneficiary. Press enter to re-enter or press other key to exit")
+                if len(i) == 0:
+                    self.add_beneficiary()
+                else:
+                    print(i)
+                    return
 
-        elif not self.checkin.CheckInFunction("Account_no", self.acc_no):
-            print("This Account is not belong to our bank, Try with appropriate one ")
-            self.add_beneficiary()
-        else:
-            name = self.query_reg.find_values_1arg("Account_no", self.acc_no, "First_name")
-            self.view_schema.table_with_tupple_list(["Name", "Account Number"], [(name[0], self.acc_no)])
-            inp = input("Press Enter to Continue or other key to edit: ")
-            if len(inp) == 0:
-                self.sqlCon.run_query(
-                    f"""insert into Benifeciary_{self.username} (Benificiary_name, Benificiary_Account_no) values ("{name[0]}",{self.acc_no}) """)
-                self.show_list_of_beneficiary()
-                print("Benificiary added to your profile!")
-            else:
+            elif not self.checkin.CheckInFunction("Account_no", self.acc_no) and self.B:
+                print("This Account is not belong to our bank, Try with appropriate one ")
                 self.add_beneficiary()
+            elif self.B:
+                name = self.query_reg.find_values_1arg("Account_no", self.acc_no, "First_name")
+                self.view_schema.table_with_tupple_list(["Name", "Account Number"], [(name[0], self.acc_no)])
+                inp = input("Press Enter to Continue or other key to edit: ")
+                if len(inp) == 0:
+                    self.sqlCon.run_query(
+                        f"""insert into Benifeciary_{self.username} (Benificiary_name, Benificiary_Account_no) values ("{name[0]}",{self.acc_no}) """)
+                    self.show_list_of_beneficiary()
+                    print("Benificiary added to your profile!")
+                else:
+                    self.add_beneficiary()
+        except Exception as e:
+            print(e)
 
     def edit_personal_details(self):
         print("1.) Name\n2.) Date of Birth \n3.) Permanent Address\n4.) Temporary Address \n5.) Email ")
@@ -254,7 +259,7 @@ class login:
         query_ad_u.update_value("Account_no", recievers_acc_no, "account_balance", (rb[0] + int(self.transfer_ammount)))
         print("Transaction Successfull!")
         print("------------------------------------------------------------")
-        temp  = input("Press enter to show account info: ")
+        temp = input("Press enter to show account info: ")
         print("------------------------------------------------------------")
         self.show_account_details()
         print("------------------------------------------------------------")
@@ -361,13 +366,13 @@ class login:
 #   SAME BENEFICIARY BUG TO BE FIXED. FIXED
 
 
-# obj = login('9876543211')
-# # obj.show_personal_details()
-# # print("")
-# # obj.show_account_details()
-# # print("")
-# # obj.show_list_of_beneficiary()
-# # print("")
-# # obj.show_card_details()
-# obj.run_login()
+# obj = login('6264242775')
+# # # # obj.show_personal_details()
+# # # # print("")
+# # # # obj.show_account_details()
+# # # # print("")
+# # # # obj.show_list_of_beneficiary()
+# # # # print("")
+# # # # obj.show_card_details()
+# obj.change_MPIN()
 # # 6526248324

@@ -28,16 +28,16 @@ def password_input(username):
     password = input("Enter Password: ")
     if not cons.password(password):
         print("Try Again")
-        out = password_input()
+        out = password_input(username)
         return out
     else:
         if check_password.password_check("Login_Username", username, "Password", password):
             return True
         else:
-            print("User name does not exist")
+            print("Incorrect Password")
             temp = reg.taking_input("1.) Back to homepage\n2.) Retry Password\nSelect your desired field: ", 1, 2)
             if int(temp) == 2:
-                out = Username_input()
+                out = password_input(username)
                 return out
             else:
                 return False
@@ -56,6 +56,7 @@ def run_process(option):
                     obj.run_login()
                     Homepage()
                 else:
+                    Homepage()
                     return
 
         elif int(option) == 2:
@@ -68,8 +69,6 @@ def run_process(option):
                 reg.last_check()
                 reg.database_creation()
             Homepage()
-
-
 
     except Exception as e:
         exitpage()
