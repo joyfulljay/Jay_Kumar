@@ -22,7 +22,8 @@ class login:
         self.wrong_pin_count = 0
         self.update_reg = Registeration()
         self.username = user_name
-        self.checkin = helper_query("BANKING", "Registeration")
+        self.checkin = helper_query("BANKING", f"Benifeciary_{user_name}")
+        self.checkinBenificiary = helper_query("BANKING", "Registeration")
         self.query_pd = Data_queries(f"personal_details_{user_name}", "BANKING")
         self.query_ad = Data_queries(f"account_details_{user_name}", "BANKING")
         self.query_bd = Data_queries(f"Benifeciary_{user_name}", "BANKING")
@@ -137,6 +138,13 @@ class login:
         account_no = self.query_reg.find_values_1arg("Mobile_no", self.username, "Account_no")
         print("Note:- There are only internal transaction service available currently. We can add only our bank users")
         self.acc_no = self.taking_input("Enter The Account no. of Recipient: ", 9999999999)
+        if self.checkinBenificiary.CheckInFunction("Benificiary_Account_no", self.acc_no):
+            print("Benificiary Already Created with this account no")
+            inp = input("Press Enter to go back to Home or other key to retry: ")
+            if len(inp) == 0:
+                return
+            else:
+                self.add_beneficiary()
 
         if account_no[0] == int(self.acc_no):
             i = input(
@@ -349,8 +357,8 @@ class login:
 
 
 #   OWN BANK ACCOUNT BUG TO BE FIXED. FIXED
-#   STEP BUG IS TO BE FIXED IN REGISTRATION.
-#   SAME BENEFICIARY BUG TO BE FIXED.
+#   STEP BUG IS TO BE FIXED IN REGISTRATION. FIXED
+#   SAME BENEFICIARY BUG TO BE FIXED. FIXED
 
 
 # obj = login('9876543211')

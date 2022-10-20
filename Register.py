@@ -261,7 +261,7 @@ class Registeration:
             return out
 
     def insert_card_details(self, type_, username):
-        card_no = int(time.time())
+        card_no = int("202201" + str(int(time.time())))
         cvv = int(1000 * (random.random() + 0.1))
         pin = self.taking_input("Enter a valid 4 digit pin: ", 4, 9999)
         self.run_query_obj.run_query(
