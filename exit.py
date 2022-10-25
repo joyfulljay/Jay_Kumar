@@ -4,6 +4,13 @@ from mysqlconnector import *
 
 
 def feedback(rating, comment, login_timestamp):
+    """
+    feed back execution according to given parameters to the feedback table in given database
+    :param rating:
+    :param comment:
+    :param login_timestamp:
+    :return:
+    """
     logout_time = dt.datetime.now()
     con = mySQLcon("BANKING")
     con.run_query(
@@ -24,6 +31,11 @@ def feedback(rating, comment, login_timestamp):
 
 
 def logout(login_timestamp):
+    """
+    used to take user feedback for current session and call the feedback function to upload in the database
+    :param login_timestamp:
+    :return:
+    """
     rating = input("Hey! How did we serve. Please Rate us on 0 to 5 :")
     cons = constraints()
     if cons.integer(rating):
@@ -36,4 +48,8 @@ def logout(login_timestamp):
 
 
 def exitpage():
+    """
+    this is executed when we close the program
+    :return:
+    """
     print("{:-^100}".format("Thank you for visiting"))

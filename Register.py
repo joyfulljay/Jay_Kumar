@@ -137,7 +137,6 @@ class Registeration:
             return out1
 
     def Enter_D_O_B(self):
-
         day = self.taking_input("Enter the day of birth 'dd' : ", 2, 31)
         month = self.taking_input("Enter the month of birth 'mm' : ", 2, 12)
         year = self.taking_input("Enter the year of birth 'yyyy' : ", 4, 2022)

@@ -257,7 +257,7 @@ class login:
         rb = query_ad_u.find_values_1arg("1", "1", "account_balance")
         # print(rb)
         query_ad_u.update_value("Account_no", recievers_acc_no, "account_balance", (rb[0] + int(self.transfer_ammount)))
-        print("Transaction Successfull!")
+        print("Transaction Successful!")
         print("------------------------------------------------------------")
         temp = input("Press enter to show account info: ")
         print("------------------------------------------------------------")

@@ -4,6 +4,11 @@ import datetime
 class constraints:
 
     def spaces(self, user_response):
+        """
+        check iteratively if there is no space in the user response
+        :param user_response:
+        :return:
+        """
         for i in user_response:
             if ord(i) == 32:
                 print("oops! please avoid using spaces")
@@ -11,6 +16,12 @@ class constraints:
         return True
 
     def length_constraint(self, user_response, leng):
+        """
+        check the length constraint
+        :param user_response:
+        :param leng:
+        :return:
+        """
         if len(user_response) == leng:
             return True
         else:
@@ -18,6 +29,11 @@ class constraints:
             return False
 
     def integer(self, user_response):
+        """
+        check if the user response is integer and not
+        :param user_response:
+        :return:
+        """
         for i in user_response:
             if (ord(i) < ord('0')) or (ord(i) > ord('9')):
                 print("oops! please respond with a integral values")
@@ -26,12 +42,24 @@ class constraints:
         return True
 
     def range(self, user_response, greater_than, lesser_than):
+        """
+        check if the user response is in the given range or not
+        :param user_response:
+        :param greater_than:
+        :param lesser_than:
+        :return:
+        """
         if (user_response > greater_than) and (user_response < lesser_than):
             return True
         else:
             print("oops, looks like you entered value out of bound")
 
     def password(self, user_response):
+        """
+        constraint for password
+        :param user_response:
+        :return:
+        """
         if len(user_response) < 9:
             print('Please enter at least 9 character length of password')
             return False
@@ -73,6 +101,11 @@ class constraints:
                             return True
 
     def Aadhar_card(self, user_response):
+        """
+        constraint for aadhar card
+        :param user_response:
+        :return:
+        """
         if self.spaces(user_response) and self.integer(user_response) and self.length_constraint(user_response,
                                                                                                  12) and self.range(
             int(user_response), 100010001000, 999999999999):
@@ -82,6 +115,11 @@ class constraints:
             return False
 
     def Mobile_no(self, user_response):
+        """
+        constraint for mobile input
+        :param user_response:
+        :return:
+        """
         if self.spaces(user_response) and self.integer(user_response) and self.length_constraint(user_response,
                                                                                                  10) and self.range(
             int(user_response), 6000000000, 9999999999):
@@ -91,6 +129,11 @@ class constraints:
             return False
 
     def email_id(self, user_response):
+        """
+        constraint for email input
+        :param user_response:
+        :return:
+        """
         if not self.spaces(user_response):
             return False
 
@@ -124,6 +167,11 @@ class constraints:
                         return False
 
     def Pan_card(self, user_response):
+        """
+        constraint for pan card input
+        :param user_response:
+        :return:
+        """
         if not self.spaces(user_response):
             return False
         if not self.length_constraint(user_response, 10):
@@ -151,6 +199,13 @@ class constraints:
         return True
 
     def is_valid_date(self, year, month, day):
+        """
+        to check if the date is valid or not
+        :param year:
+        :param month:
+        :param day:
+        :return:
+        """
         isValidDate = True
         try:
             datetime.datetime(int(year), int(month), int(day))
@@ -160,6 +215,11 @@ class constraints:
         return isValidDate
 
     def Age_constraint(self, birthDate):
+        """
+        To check the eligibility from birthdate(age>18).
+        :param birthDate:
+        :return:
+        """
         today = datetime.date.today()
         age = today.year - birthDate.year - ((today.month, today.day) < (birthDate.month, birthDate.day))
         if age >= 18:
@@ -170,6 +230,13 @@ class constraints:
             return False
 
     def input_constraint(self, user_response, leng, Range):
+        """
+        constraint for taking an input inside according to given length and range
+        :param user_response:
+        :param leng:
+        :param Range:
+        :return:
+        """
         if self.spaces(user_response) and self.integer(user_response) and self.length_constraint(user_response,
                                                                                                  leng) and self.range(
             int(user_response), 0, Range + 1):
@@ -184,6 +251,12 @@ class constraints:
             return False
 
     def input_constraintWoutl(self, user_response, Range):
+        """
+        constraint for user response in the given range.
+        :param user_response:
+        :param Range:
+        :return:
+        """
         if self.spaces(user_response) and self.integer(user_response) and self.range(int(user_response), 0, Range + 1):
             return True
             # if self.range(int(user_response[4:6:1]), 0, 13) and self.range(int(user_response[6::]), 0, 31):
@@ -202,6 +275,11 @@ class constraints:
     #         return False
 
     def only_alphabet(self, user_response):
+        """
+        constraints for taking only alphabetical input
+        :param user_response:
+        :return:
+        """
         for i in user_response:
             if ((ord(i) >= (ord('A'))) and (ord(i) <= (ord('Z')))) or (
                     (ord(i) >= (ord('a'))) and (ord(i) <= (ord('z')))):
@@ -211,6 +289,11 @@ class constraints:
                 return False
 
     def name_check(self, user_response):
+        """
+        Constraint for name
+        :param user_response:
+        :return:
+        """
         if self.spaces(user_response) and self.only_alphabet(user_response):
             return True
         else:
